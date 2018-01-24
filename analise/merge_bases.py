@@ -37,5 +37,6 @@ agencias_contribuicoes = pd.concat([ana_contribuicoes, ancine_contribuicoes])
 agencias_mecanismos = pd.concat([ana_mecanismos, ancine_mecanismos])
 
 agencias_mecanismos
+agencias_contribuicoes
 
 #https://erikrood.com/Posts/py_gsheets.html
