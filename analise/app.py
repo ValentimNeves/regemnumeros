@@ -9,8 +9,8 @@ from datetime import datetime
 app = dash.Dash()
 
 df = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
-                        '12R7AF3WblBYtqHys3EJpIBgO3J9MUUPE0C2PEE5raPc' +
-                        '/export?gid=921256247&format=csv')
+                        '1-9259mXNUjsQKBsZIlUAbRudK87bdQ4j6zWE8e0zGL4' +
+                        '/export?gid=805820567&format=csv')
 
 agency_options = [{'label': agency, 'value': agency}
                   for agency in set(df['Agência'])]
@@ -44,6 +44,7 @@ app.layout = html.Div(style={'background-color': colors['background']}, children
                 style = {'text-align': 'center',
                          'color': colors['text']},
             ),
+            html.P('Mecanismo de participação', style = {'text-align': 'center'}),
         ],
         className='row'
     ),
@@ -173,10 +174,9 @@ app.layout = html.Div(style={'background-color': colors['background']}, children
     ]),
     html.Div([
         html.Div([
-            html.H4('Contribuições')
-        ], className = 'row', {'text-align': 'center'},
-
-    ])
+            dcc.Graph(id = 'mean_contribution')
+        ], className = 'six columns',)
+    ]),
 ])
 
 def filter_dataframe(df, agency, int_part):
@@ -403,8 +403,15 @@ def data_calculo(df, var1, var2):
 
         if df.loc[i,var1]  != 'N/D' and df.loc[i,var1]  != 'N/D' and type(df.loc[i,var1]) == str:
             if df.loc[i,var2]  != 'N/D' and df.loc[i,var2]  != 'N/D' and type(df.loc[i,var2]) == str:
-                aux_var1 = datetime.strptime(df.loc[i, var1], '%Y/%m/%d')
-                aux_var2 = datetime.strptime(df.loc[i, var2], '%Y/%m/%d')
+                if len(df.loc[i, var1].split('/')[0]) == 4:
+                    aux_var1 = datetime.strptime(df.loc[i, var1], '%Y/%m/%d')
+                else:
+                    aux_var1 = datetime.strptime(df.loc[i, var1], '%d/%m/%Y')
+                if len(df.loc[i, var2].split('/')[0]) == 4:
+                    aux_var2 = datetime.strptime(df.loc[i, var2], '%Y/%m/%d')
+                else:
+                    aux_var2 = datetime.strptime(df.loc[i, var2], '%d/%m/%Y')
+
                 aux = aux_var2 - aux_var1
                 aux = aux.days
                 time_day.append(aux)
@@ -588,6 +595,61 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, ob
     figure = dict(data=traces, layout = layout)
     return figure
 
+@app.callback(Output('mean_contribution', 'figure'),
+             [Input('agency_options', 'value'),
+              Input('type_part_options', 'value'),
+              Input('type_year_options', 'value'),
+              Input('objective_options', 'value'),
+              Input('subject_options', 'value')])
+def make_object_time_figure(agency_value, int_part_value, year_options_value, objective_type, subject_type):
+    dff = filter_dataframe_objective_subject(df, agency_value, int_part_value, objective_type, subject_type)
+    dff = dff[dff.Situacao == 'Encerrada']
+
+    y = []
+    x = []
+    y2 = []
+    x2 = []
+    for i in dff.Ano.drop_duplicates().sort_values():
+        y.append(np.mean([float(j) for j in df[df.Ano == i].Quantos_participaram if 'N' not in str(j).upper()]))
+        x.append(str(i))
+
+        y2.append(np.mean([float(j) for j in dff.Quantos_participaram if 'N' not in str(j).upper()]))
+        x2.append(str(i))
+
+    traces = []
+    trace = dict(
+        type='Scatter',
+        x = x,
+        y = y,
+        name = 'Média por ano'
+        )
+
+    trace2 = dict(
+        x=x2,
+        y=y2,
+        mode='lines',
+        type='Scatter',
+        name='Média geral',
+    )
+
+    traces.append(trace)
+    traces.append(trace2)
+
+    layout = dict(
+        autosize=True,
+        margin=dict(
+            l=35,
+            r=35,
+            b=35,
+            t=120
+        ),
+        hovermode="closest",
+        legend=dict(font=dict(size=10), orientation='h'),
+        title="Média do número de contribuintes que participaram de mecanismos já encerrados",
+        zoom=7,
+    )
+    figure = dict(data=traces, layout = layout)
+    return figure
 
 
 app.css.append_css({"external_url": "https://codepen.io/JoaoCarabetta/pen/RjzpPB.css"})

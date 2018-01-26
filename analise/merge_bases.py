@@ -13,18 +13,16 @@ def import_base(agencia):
 
     contribuicoes = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
                                 agencia_dic[agencia] +
-                                '/export?gid=1665848903&format=csv',
-                               # Set first column as rownames in data frame
-                               index_col=0)
+                                '/export?gid=1665848903&format=csv', encoding = 'utf-8')
+
 
     aux_drop = [i for i in contribuicoes.columns if 'Unnamed' in i]
     contribuicoes = contribuicoes.drop(aux_drop, axis=1)
 
     mecanismos = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
                                  agencia_dic[agencia] +
-                                 '/export?gid=256430091&format=csv',
-                                 # Set first column as rownames in data frame
-                                 index_col=0)
+                                 '/export?gid=256430091&format=csv')
+
     aux_drop = [i for i in mecanismos.columns if 'Unnamed' in i]
     mecanismos = mecanismos.drop(aux_drop, axis=1)
 
@@ -36,7 +34,32 @@ ancine_contribuicoes, ancine_mecanismos = import_base('ancine')
 agencias_contribuicoes = pd.concat([ana_contribuicoes, ancine_contribuicoes])
 agencias_mecanismos = pd.concat([ana_mecanismos, ancine_mecanismos])
 
-agencias_mecanismos
-agencias_contribuicoes
+agencias_mecanismos = agencias_mecanismos.reset_index(drop = True)
+agencias_contribuicoes= agencias_contribuicoes.reset_index(drop = True)
+
+agencias_contribuicoes.Categoria_Participante[agencias_contribuicoes['Entidade_Representativa'] == "Sim"] = 'Entidade Representativa'
+agencias_contribuicoes = agencias_contribuicoes.drop('Entidade_Representativa', axis = 1)
+
+
+def remove_r(x):
+    if type(x) == str:
+        x = x.replace('\r', '')
+        x = x.split()
+        x = ' '.join(x)
+        return x
+    else:
+        return x
+
+for i in agencias_mecanismos.columns:
+    agencias_mecanismos[i] = agencias_mecanismos[i].apply(lambda x: remove_r(x))
+
+for i in agencias_contribuicoes.columns:
+    agencias_contribuicoes[i] = agencias_contribuicoes[i].apply(lambda x: remove_r(x))
+
+
+agencias_mecanismos.to_csv('agencias_mecanismos.csv', index = False)
+agencias_contribuicoes.to_csv('agencias_contribuicoes.csv', index =False)
+
+
 
 #https://erikrood.com/Posts/py_gsheets.html
