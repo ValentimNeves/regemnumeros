@@ -1,9 +1,10 @@
 import dash
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 app = dash.Dash()
 
@@ -169,6 +170,12 @@ app.layout = html.Div(style={'background-color': colors['background']}, children
                 className = 'six columns')
         ],
             className = 'row columns'),
+    ]),
+    html.Div([
+        html.Div([
+            html.H4('Contribuições')
+        ], className = 'row', {'text-align': 'center'},
+
     ])
 ])
 
@@ -349,7 +356,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, my
     figure = dict(data=traces, layout=layout)
     return figure
 
-@app.callback(Output('mean_time_preparation', 'figure'),
+@app.callback(Output('subject_time', 'figure'),
              [Input('agency_options', 'value'),
               Input('type_part_options', 'value'),
               Input('type_year_options', 'value'),
@@ -388,29 +395,66 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, my
     figure = dict(data=traces, layout=layout)
     return figure
 
+def data_calculo(df, var1, var2):
 
-@app.callback(Output('subject_time', 'figure'),
+    time_day = []
+
+    for i in df.index:
+
+        if df.loc[i,var1]  != 'N/D' and df.loc[i,var1]  != 'N/D' and type(df.loc[i,var1]) == str:
+            if df.loc[i,var2]  != 'N/D' and df.loc[i,var2]  != 'N/D' and type(df.loc[i,var2]) == str:
+                aux_var1 = datetime.strptime(df.loc[i, var1], '%Y/%m/%d')
+                aux_var2 = datetime.strptime(df.loc[i, var2], '%Y/%m/%d')
+                aux = aux_var2 - aux_var1
+                aux = aux.days
+                time_day.append(aux)
+            else:
+                time_day.append(df.loc[i,var2])
+        else:
+            time_day.append(df.loc[i,var1])
+
+    return time_day
+
+@app.callback(Output('mean_time_preparation', 'figure'),
              [Input('agency_options', 'value'),
               Input('type_part_options', 'value'),
               Input('type_year_options', 'value'),
               Input('objective_options', 'value'),
               Input('subject_options', 'value')])
-def make_object_time_figure(agency_value, int_part_value, year_options_value, objective_type, objective_type):
-    dff = filter_dataframe_objective_subject(df, agency_value, int_part_value, objective_type, objective_type)
+def make_object_time_figure(agency_value, int_part_value, year_options_value, objective_type, subject_type):
+    dff = filter_dataframe_objective_subject(df, agency_value, int_part_value, objective_type, subject_type)
+
+    dff['time_days'] = data_calculo(dff, 'Convocacao_Data', 'Contribuicao_data_final')
+
+    y = []
+    x = []
+    y2 = []
+    x2 = []
+    for i in dff.Ano.drop_duplicates().sort_values():
+        y.append(np.mean([i for i in dff[dff.Ano == i].time_days if type(i) != str]))
+        x.append(str(i))
+
+        y2.append(np.mean([i for i in dff.time_days if type(i) != str]))
+        x2.append(str(i))
 
     traces = []
     trace = dict(
-        type='pie',
-        labels=dfff.groupby("Indexacao_Tema").count()["Agência"].index,
-        values=dfff.groupby("Indexacao_Tema").count()['Agência'].values,
-        name='Tema',
-        text=dfff.groupby("Indexacao_Tema").count()["Agência"].index,  # noqa: E501
-        hoverinfo="value+percent",
-        textinfo="percent",
-        hole = 0.5,
+        type='Scatter',
+        x = x,
+        y = y,
+        name = 'Média por ano'
         )
 
+    trace2 = dict(
+        x=x2,
+        y=y2,
+        mode='lines',
+        type='Scatter',
+        name='Média geral',
+    )
+
     traces.append(trace)
+    traces.append(trace2)
 
     layout = dict(
         autosize=True,
@@ -418,15 +462,132 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, ob
             l=35,
             r=35,
             b=35,
-            t=45
+            t=120
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title='Temas',
+        title="Média, em dias, do tempo de preparação e submissão das contribuições",
         zoom=7,
     )
-    figure = dict(data=traces, layout=layout)
+    figure = dict(data=traces, layout = layout)
     return figure
+
+@app.callback(Output('mean_time_answer', 'figure'),
+             [Input('agency_options', 'value'),
+              Input('type_part_options', 'value'),
+              Input('type_year_options', 'value'),
+              Input('objective_options', 'value'),
+              Input('subject_options', 'value')])
+def make_object_time_figure(agency_value, int_part_value, year_options_value, objective_type, subject_type):
+    dff = filter_dataframe_objective_subject(df, agency_value, int_part_value, objective_type, subject_type)
+    dff = dff[dff.Situacao == 'Encerrada']
+
+    dff['time_days'] = data_calculo(dff, 'Contribuicao_data_final', 'Relatorio_data')
+
+    y = []
+    x = []
+    y2 = []
+    x2 = []
+    for i in dff.Ano.drop_duplicates().sort_values():
+        y.append(np.mean([i for i in dff[dff.Ano == i].time_days if type(i) != str]))
+        x.append(str(i))
+
+        y2.append(np.mean([i for i in dff.time_days if type(i) != str ]))
+        x2.append(str(i))
+
+    traces = []
+    trace = dict(
+        type='Scatter',
+        x = x,
+        y = y,
+        name = 'Média por ano'
+        )
+
+    trace2 = dict(
+        x=x2,
+        y=y2,
+        mode='lines',
+        type='Scatter',
+        name='Média geral',
+    )
+
+    traces.append(trace)
+    traces.append(trace2)
+
+    layout = dict(
+        autosize=True,
+        margin=dict(
+            l=35,
+            r=35,
+            b=35,
+            t=120
+        ),
+        hovermode="closest",
+        legend=dict(font=dict(size=10), orientation='h'),
+        title="Média, em dias, do tempo da disponibilização do relatório após o fim das contribuições, dos mecanismos encerrados",
+        zoom=7,
+    )
+    figure = dict(data=traces, layout = layout)
+    return figure
+
+@app.callback(Output('mean_time_type1', 'figure'),
+             [Input('agency_options', 'value'),
+              Input('type_part_options', 'value'),
+              Input('type_year_options', 'value'),
+              Input('objective_options', 'value'),
+              Input('subject_options', 'value')])
+def make_object_time_figure(agency_value, int_part_value, year_options_value, objective_type, subject_type):
+    dff = filter_dataframe_objective_subject(df, agency_value, int_part_value, objective_type, subject_type)
+    dff = dff[dff.Situacao == 'Encerrada']
+
+    dff['time_days'] = data_calculo(dff, 'Convocacao_Data', 'Relatorio_data')
+
+    y = []
+    x = []
+    y2 = []
+    x2 = []
+    for i in dff.Ano.drop_duplicates().sort_values():
+        y.append(np.mean([i for i in dff[dff.Ano == i].time_days if type(i) != str]))
+        x.append(str(i))
+
+        y2.append(np.mean([i for i in dff.time_days if type(i) != str ]))
+        x2.append(str(i))
+
+    traces = []
+    trace = dict(
+        type='Scatter',
+        x = x,
+        y = y,
+        name = 'Média por ano'
+        )
+
+    trace2 = dict(
+        x=x2,
+        y=y2,
+        mode='lines',
+        type='Scatter',
+        name='Média geral',
+    )
+
+    traces.append(trace)
+    traces.append(trace2)
+
+    layout = dict(
+        autosize=True,
+        margin=dict(
+            l=35,
+            r=35,
+            b=35,
+            t=120
+        ),
+        hovermode="closest",
+        legend=dict(font=dict(size=10), orientation='h'),
+        title="Média, em dias, do tempo da convocação até a disponibilização do relatório, dos mecanismos encerrados",
+        zoom=7,
+    )
+    figure = dict(data=traces, layout = layout)
+    return figure
+
 
 
 app.css.append_css({"external_url": "https://codepen.io/JoaoCarabetta/pen/RjzpPB.css"})
