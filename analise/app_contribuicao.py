@@ -6,15 +6,17 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-app = dash.Dash()
+app = dash.Dash(__name__)
+
+server = app.server
 
 df = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
-                        '1PKLtiDnd6V9QpHThrt7DyUexLDfuzgglqbNAYwFytwg' +
-                        '/export?gid=923758049&format=csv')
+                        '1b4BBTa2ORDhipCI1DIltANBh4tksAfWR53GJtz1U6N8' +
+                        '/export?gid=233316896&format=csv')
 
 df_mecanismo = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
-                        '1-9259mXNUjsQKBsZIlUAbRudK87bdQ4j6zWE8e0zGL4' +
-                        '/export?gid=805820567&format=csv')
+                        '1JtF3rZcL7BV9sHtOu1Y2AHi9LA67HDoMgynk05MLRpA' +
+                        '/export?gid=1964373741&format=csv')
 
 df = pd.merge(df, df_mecanismo[["ID_Interno", "Ano", "Instrumento_de_Participacao", "Objetivo_participacao", "Indexacao_Tema"]], how = 'left', on = "ID_Interno")
 

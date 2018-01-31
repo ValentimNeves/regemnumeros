@@ -5,8 +5,11 @@ import dash_html_components as html
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import os
 
-app = dash.Dash()
+app = dash.Dash(__name__)
+
+server = app.server
 
 df = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
                         '1-9259mXNUjsQKBsZIlUAbRudK87bdQ4j6zWE8e0zGL4' +
@@ -29,26 +32,24 @@ subject_options = []
 
 aux_instru_part = {'PP': 'Presencial', 'PNP': 'Não presencial', 'PP e PNP': 'Presencial e não presencial'}
 
-colors = {
-    'background': '#FFFFFF',
-    'background2': '#004D85',
-    'text': '#000000'
-}
+colors = {'text_H1': '#ffffff',
+          'text_n': '#eeeeee'}
 
-
-app.layout = html.Div(style={'background-color': colors['background']}, children=[
+app.layout = html.Div(children=[
+html.Div([
     html.Div(
         [
             html.H2(
                 'Regulação em números',
                 style = {'text-align': 'center',
-                         'color': colors['text']},
+                         'color': colors['text_H1'],
+                         },
             ),
-            html.P('Mecanismo de participação', style = {'text-align': 'center'}),
+            html.H6('Mecanismo de participação', style = {'text-align': 'center', 'color': colors['text_n']}),
         ],
         className='row'
     ),
-    html.Hr(style={'margin': '0', 'margin-bottom': '5'}),
+    html.Hr(style={'margin': '20', 'margin-bottom': '5'}),
 
     html.Div([
         html.Div([
@@ -61,7 +62,7 @@ app.layout = html.Div(style={'background-color': colors['background']}, children
                     options=agency_options,
                     value='ANA',
                         ),],
-                className='two columns', style ={'float': 'left'},
+                className='two columns', style ={'float': 'left', 'margin-left': '200', 'color': colors['text_H1']},
                 ),
 
             html.Div([
@@ -72,18 +73,18 @@ app.layout = html.Div(style={'background-color': colors['background']}, children
                     options=type_part_options,
                     value='Todos',
                 ),],
-                className='two columns', style ={'float': 'left'},
+                className='three columns', style ={'float': 'left', 'margin-left': '120', 'color': colors['text_H1']},
                 ),
 
             html.Div([
-                html.P('Escolha como deve ser feita a divisão temporal:'),
+                html.P('Escolha o período temporal:'),
 
                 dcc.Dropdown(
                     id='type_year_options',
                     options=type_year_options,
                     value='Por ano',
                 ),],
-            className='three columns', style ={'float': 'left'},
+            className='three columns', style ={'float': 'left', 'margin-left': '120', 'color': colors['text_H1']},
             ),
         ],
         className='row', style={'margin-top': '20'},
@@ -91,36 +92,41 @@ app.layout = html.Div(style={'background-color': colors['background']}, children
     ]),
 
     html.Div([
-        html.Div([
+          html.H6('',
+                   id='num_mecanism',
+                   style={'text-align': 'center', 'color': colors['text_H1'], 'margin-top': '60'},
+                   ),
+    ], className = 'six columns offset-by-three'),
 
-            dcc.Graph(id='contribution_time'),
-            ], className = 'five columns',
-            ),
+    html.Div([
+        dcc.Graph(id='contribution_time'),
+            ], className = 'ten columns offset-by-one', style = {'margin-top': '35'},
+        ),
+
+        html.Div([
             html.Div([
-                html.P('',
-                        id='num_mecanism',
-                        style = {'text-align': 'center'},
-                        ),
                 html.Div([
                     html.Div([
-                        html.Div([
-                    dcc.Graph(id='object_time'),], className = 'six columns',),
-                        html.Div([
-                    dcc.Graph(id='subject_time'),], className = 'six columns',),
+                dcc.Graph(id='object_time'),], className = 'six columns',),
+                    html.Div([
+                dcc.Graph(id='subject_time'),], className = 'six columns',),
 
-                    ], className = 'row',),
-                    dcc.RangeSlider(
-                        id='my-slider',
-                        min=2010,
-                        max=2017,
-                        value=[2010, 2017],
-                        marks={i:i for i in range(2010,2018)}
-                    ),
                 ], className = 'row',),
-            ], className = 'six columns', style={'margin-top': '20'}),
-        ],
-        className='row',
-        ),
+                dcc.RangeSlider(
+                    id='my-slider',
+                    min=2010,
+                    max=2017,
+                    value=[2010, 2017],
+                    marks={i:i for i in range(2010,2018)}
+                ),
+            ], className = 'row',),
+        ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
+
+    html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
+
+    ], className='ten columns offset-by-one', style={'margin-top': '60'}),
 
     html.Div([
         html.Div([
@@ -131,7 +137,7 @@ app.layout = html.Div(style={'background-color': colors['background']}, children
                 options=objective_options,
                 value='Todos',
             ), ],
-            className='two columns', style={'float': 'left'},
+            className='two columns', style={'float': 'left', 'margin-left': '60', 'color': colors['text_H1']},
         ),
 
         html.Div([
@@ -142,42 +148,38 @@ app.layout = html.Div(style={'background-color': colors['background']}, children
                 options=subject_options,
                 value='Todos',
             ), ],
-            className='three columns', style={'float': 'left'},
+            className='three columns', style={'float': 'left', 'margin-left': '120', 'color': colors['text_H1']},
         ),
     ],
-        className='row', style={'margin-top': '20'},
+        className='ten columns offset-by-one', style={'margin-top': '15'},
     ),
 
     html.Div([
-        html.Div([
-            html.Div([
-                dcc.Graph(id='mean_time_preparation')
+        dcc.Graph(id='mean_time_preparation')
             ],
-                className = 'six columns' ),
-            html.Div([
-                dcc.Graph(id='mean_time_answer')
-            ],
-                className = 'six columns')
-        ],
-            className = 'row' ),
-        html.Div([
-            html.Div([
-                dcc.Graph(id='mean_time_type1')
-            ],
-                className = 'six columns'),
-            html.Div([
-                dcc.Graph(id='mean_time_type2')
-            ],
-                className = 'six columns')
-        ],
-            className = 'row columns'),
-    ]),
+                className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+
     html.Div([
-        html.Div([
+            dcc.Graph(id='mean_time_answer')
+        ],
+            className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
+            dcc.Graph(id='mean_time_type1')
+        ],
+            className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
+            dcc.Graph(id='mean_time_type2')
+        ],
+            className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
             dcc.Graph(id = 'mean_contribution')
-        ], className = 'six columns',)
-    ]),
-])
+        ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+
+], className='ten columns offset-by-one', style = {'background-color': '#bbbbbb'}),
+], className='twelve columns', style = {'background-color': '#eeeeee'})
 
 def filter_dataframe(df, agency, int_part):
     if int_part == 'Todos':
@@ -296,8 +298,10 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
     trace = dict(
         type='bar',
         x = [str(i) for i in dff.groupby('Ano').count()['Agência'].index],
-        y = (dff.groupby('Ano').count()['Agência'].values/dff.shape[0])*100
-        )
+        y = (dff.groupby('Ano').count()['Agência'].values/dff.shape[0])*100,
+        marker = dict(
+            color = '#00004D'
+        )    )
 
     traces.append(trace)
 
@@ -311,9 +315,15 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Percentual de mercanismos de participação {}".format(year_options_value.lower()),
+        title="Percentual do número de audiências {} em relação ao total".format(year_options_value.lower()),
         zoom=7,
-    )
+        titlefont = dict(
+          size = 21
+        ),
+        yaxis = dict (
+            showgrid = False
+        )
+       )
     figure = dict(data=traces, layout = layout)
     return figure
 
@@ -331,7 +341,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, my
         type='pie',
         labels=dfff.groupby("Objetivo_participacao").count()["Agência"].index,
         values=dfff.groupby("Objetivo_participacao").count()['Agência'].values,
-        name='Objetivos',
+        name='Percentual de audiências por objetivo',
         text=dfff.groupby("Objetivo_participacao").count()["Agência"].index,  # noqa: E501
         hoverinfo="value+percent",
         textinfo="percent",
@@ -349,10 +359,18 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, my
             t=45
         ),
         hovermode="closest",
-        legend=dict(font=dict(size=10), orientation='h'),
-        title='Objetivos',
+        title='Percentual de audiências por objetivo',
         zoom=7,
+        titlefont=dict(
+            size=21
+        ),
+        legend = dict(
+            bgcolor = 'rgb(213,211,211)',
+            orientation = 'h',
+            xanchor='center',
+              )
     )
+
     figure = dict(data=traces, layout=layout)
     return figure
 
@@ -370,7 +388,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, my
         type='pie',
         labels=dfff.groupby("Indexacao_Tema").count()["Agência"].index,
         values=dfff.groupby("Indexacao_Tema").count()['Agência'].values,
-        name='Tema',
+        name='Percentual de audiências por tema',
         text=dfff.groupby("Indexacao_Tema").count()["Agência"].index,  # noqa: E501
         hoverinfo="value+percent",
         textinfo="percent",
@@ -388,10 +406,18 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, my
             t=45
         ),
         hovermode="closest",
-        legend=dict(font=dict(size=10), orientation='h'),
-        title='Temas',
+        title='Percentual de audiências por tema',
         zoom=7,
+        titlefont=dict(
+            size=21
+        ),
+        legend = dict(
+            bgcolor = 'rgb(213,211,211)',
+            orientation = 'h',
+            xanchor = 'center',
+        )
     )
+
     figure = dict(data=traces, layout=layout)
     return figure
 
@@ -473,8 +499,10 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, ob
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média, em dias, do tempo de preparação e submissão das contribuições",
+        title="Média do tempo, em dias, da preparação para a audiência",
         zoom=7,
+        xaxis = dict(showgrid = False),
+        yaxis = dict(showgrid=False)
     )
     figure = dict(data=traces, layout = layout)
     return figure
@@ -531,8 +559,11 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, ob
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média, em dias, do tempo da disponibilização do relatório após o fim das contribuições, dos mecanismos encerrados",
+        title="Média do tempo, em dias,do fim das audiências até a disponibilização do relatório",
         zoom=7,
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=False)
+
     )
     figure = dict(data=traces, layout = layout)
     return figure
@@ -589,8 +620,11 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, ob
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média, em dias, do tempo da convocação até a disponibilização do relatório, dos mecanismos encerrados",
+        title="Média do tempo, em dias, da convocação até a disponibilização do relatório.",
         zoom=7,
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=False)
+
     )
     figure = dict(data=traces, layout = layout)
     return figure
@@ -645,21 +679,24 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value, ob
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do número de contribuintes que participaram de mecanismos já encerrados",
+        title="Média do número de contribuintes que participaram de audiências",
         zoom=7,
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=False)
+
     )
     figure = dict(data=traces, layout = layout)
     return figure
 
 
-app.css.append_css({"external_url": "https://codepen.io/JoaoCarabetta/pen/RjzpPB.css"})
+#app.css.append_css({"external_url": "https://codepen.io/JoaoCarabetta/pen/RjzpPB.css"})
 
-'''
 external_css = ["https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css",
                 "https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
                 "//fonts.googleapis.com/css?family=Raleway:400,300,600",
-                "https://cdn.rawgit.com/plotly/dash-app-stylesheets/5047eb29e4afe01b45b27b1d2f7deda2a942311a/goldman-sachs-report.css",
-                "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"]
+                #"https://cdn.rawgit.com/plotly/dash-app-stylesheets/5047eb29e4afe01b45b27b1d2f7deda2a942311a/goldman-sachs-report.css",
+                "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
+                "https://cdn.rawgit.com/plotly/dash-app-stylesheets/2d266c578d2a6e8850ebce48fdb52759b2aef506/stylesheet-oil-and-gas.css"]
 
 for css in external_css:
     app.css.append_css({"external_url": css})
@@ -669,7 +706,6 @@ external_js = ["https://code.jquery.com/jquery-3.2.1.min.js",
 
 for js in external_js:
     app.scripts.append_script({"external_url": js})
-'''
 
 if __name__ == '__main__':
     app.run_server(debug=True)
