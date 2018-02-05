@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d28fa99a-9199-4537-9444-58d50b3c7850" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/analise/app.py" afterPath="$PROJECT_DIR$/analise/app.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/contribuicao" afterPath="$PROJECT_DIR$/contribuicao" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mecanismo" afterPath="$PROJECT_DIR$/mecanismo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/regemnum.iml" afterPath="$PROJECT_DIR$/.idea/regemnum.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/agencias_contribuicoes.csv" afterPath="$PROJECT_DIR$/agencias_contribuicoes.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/agencias_mecanismos.csv" afterPath="$PROJECT_DIR$/agencias_mecanismos.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/analise/app.py" afterPath="$PROJECT_DIR$/analise/app.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/analise/app_contribuicao.py" afterPath="$PROJECT_DIR$/analise/app_contribuicao.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,41 +25,53 @@
         <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="anatel.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/captura/anatel.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="app.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/analise/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="177" column="8" lean-forward="false" selection-start-line="177" selection-start-column="8" selection-end-line="177" selection-end-column="8" />
+            <state relative-caret-position="210">
+              <caret line="14" column="39" lean-forward="true" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#9106#9158#0" expanded="false" />
+                <element signature="e#9383#9866#0" expanded="false" />
+                <element signature="e#10081#12120#0" expanded="false" />
+                <element signature="e#13023#13259#0" expanded="false" />
+                <element signature="e#13555#14653#0" expanded="false" />
+                <element signature="e#18991#19961#0" expanded="false" />
+                <element signature="e#24835#26422#0" expanded="false" />
+                <element signature="e#26728#27982#0" expanded="false" />
+                <element signature="e#28280#30048#0" expanded="false" />
+                <element signature="e#30433#32191#0" expanded="false" />
+                <element signature="e#40260#42090#0" expanded="false" />
+                <element signature="e#42409#44228#0" expanded="false" />
+                <element signature="e#44543#46672#0" expanded="false" />
+                <element signature="e#46991#49109#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="quickstart.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
+      <file leaf-file-name="app_contribuicao.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1105">
-              <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+            <state relative-caret-position="9180">
+              <caret line="1220" column="53" lean-forward="false" selection-start-line="1220" selection-start-column="53" selection-end-line="1220" selection-end-column="53" />
               <folding>
-                <element signature="e#0#37#0" expanded="true" />
+                <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#11038#12316#0" expanded="false" />
+                <element signature="e#12382#12618#0" expanded="false" />
+                <element signature="e#12910#14940#0" expanded="false" />
+                <element signature="e#21236#26388#0" expanded="false" />
+                <element signature="e#26704#31623#0" expanded="false" />
+                <element signature="e#31664#32305#0" expanded="false" />
+                <element signature="e#32546#34627#0" expanded="false" />
+                <element signature="e#34939#36823#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -69,8 +88,24 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+      <find>colors_palettes_f</find>
+      <find>Estatal</find>
+      <find>Estatal_ano</find>
+      <find>object_time</find>
       <find>subject_time</find>
+      <find>mean_time_preparation</find>
+      <find>mean_time_preparation_table_obj</find>
+      <find>mean_time_preparation_table_subject</find>
+      <find>mean_time_contribution</find>
+      <find>mean_time_answer</find>
+      <find>mean_time_answer_table_obj</find>
+      <find>mean_time_answer_table_subject</find>
+      <find>'mean_time_type1'</find>
+      <find>colors_palettes_function</find>
     </findStrings>
+    <replaceStrings>
+      <replace>Estatal</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -81,7 +116,12 @@
         <option value="$PROJECT_DIR$/analise/quickstart.py" />
         <option value="$PROJECT_DIR$/analise/grafico.py" />
         <option value="$PROJECT_DIR$/captura/anatel.py" />
+        <option value="$PROJECT_DIR$/contribuicao/app.py" />
+        <option value="$PROJECT_DIR$/quickstart.py" />
+        <option value="$PROJECT_DIR$/analise/merge_bases.py" />
+        <option value="$PROJECT_DIR$/analise/app_contribuicao.py" />
         <option value="$PROJECT_DIR$/analise/app.py" />
+        <option value="$PROJECT_DIR$/mecanismo/app.py" />
       </list>
     </option>
   </component>
@@ -132,29 +172,34 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="regemnum" type="b2602c69:ProjectViewProjectNode" />
-              <item name="regemnum" type="462c0819:PsiDirectoryNode" />
+              <item name="regemnumeros" type="b2602c69:ProjectViewProjectNode" />
+              <item name="regemnumeros" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="regemnum" type="b2602c69:ProjectViewProjectNode" />
-              <item name="regemnum" type="462c0819:PsiDirectoryNode" />
+              <item name="regemnumeros" type="b2602c69:ProjectViewProjectNode" />
+              <item name="regemnumeros" type="462c0819:PsiDirectoryNode" />
               <item name="analise" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="regemnum" type="b2602c69:ProjectViewProjectNode" />
-              <item name="regemnum" type="462c0819:PsiDirectoryNode" />
-              <item name="captura" type="462c0819:PsiDirectoryNode" />
+              <item name="regemnumeros" type="b2602c69:ProjectViewProjectNode" />
+              <item name="regemnumeros" type="462c0819:PsiDirectoryNode" />
+              <item name="contribuicao" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="regemnumeros" type="b2602c69:ProjectViewProjectNode" />
+              <item name="regemnumeros" type="462c0819:PsiDirectoryNode" />
+              <item name="mecanismo" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -191,30 +236,31 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="2576" height="1056" extended-state="6" />
+    <frame x="580" y="20" width="1897" height="1080" extended-state="6" />
     <editor active="true" />
     <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16639654" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14228936" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="R Packages" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="R Graphics" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3277487" sideWeight="0.5148568" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32879582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3277487" sideWeight="0.49162614" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32565445" sideWeight="0.48514315" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="R Packages" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="R Graphics" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -225,32 +271,412 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="4" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="915">
+          <caret line="61" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/captura/anatel.py">
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+        <state relative-caret-position="255">
+          <caret line="17" column="69" lean-forward="false" selection-start-line="17" selection-start-column="69" selection-end-line="17" selection-end-column="69" />
           <folding>
-            <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14010">
+          <caret line="934" column="14" lean-forward="false" selection-start-line="934" selection-start-column="14" selection-end-line="934" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="915">
+          <caret line="61" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="69" lean-forward="false" selection-start-line="17" selection-start-column="69" selection-end-line="17" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10905">
+          <caret line="733" column="0" lean-forward="false" selection-start-line="733" selection-start-column="0" selection-end-line="733" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="915">
+          <caret line="61" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="69" lean-forward="false" selection-start-line="17" selection-start-column="69" selection-end-line="17" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10995">
+          <caret line="733" column="0" lean-forward="true" selection-start-line="733" selection-start-column="0" selection-end-line="733" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="915">
+          <caret line="61" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="69" lean-forward="false" selection-start-line="17" selection-start-column="69" selection-end-line="17" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4125">
+          <caret line="281" column="90" lean-forward="false" selection-start-line="281" selection-start-column="90" selection-end-line="281" selection-end-column="90" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="915">
+          <caret line="61" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="46" lean-forward="false" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contribuicao/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="10" column="19" lean-forward="false" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1185">
+          <caret line="85" column="76" lean-forward="false" selection-start-line="85" selection-start-column="76" selection-end-line="85" selection-end-column="76" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="915">
+          <caret line="61" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="46" lean-forward="false" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="13" column="25" lean-forward="false" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contribuicao/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="10" column="19" lean-forward="true" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contribuicao/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="18" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10110">
+          <caret line="681" column="78" lean-forward="false" selection-start-line="681" selection-start-column="78" selection-end-line="681" selection-end-column="78" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contribuicao/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="18" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -267,53 +693,40 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
+        <state relative-caret-position="1080">
           <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/analise/grafico.py" />
-    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
+    <entry file="file://$PROJECT_DIR$/analise/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+        <state relative-caret-position="2655">
+          <caret line="177" column="8" lean-forward="false" selection-start-line="177" selection-start-column="8" selection-end-line="177" selection-end-column="8" />
           <folding>
-            <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/analise/grafico.py" />
-    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analise/grafico.py" />
     <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -326,16 +739,145 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1105">
+          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/captura/anatel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1105">
+          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/grafico.py" />
+    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1105">
+          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/grafico.py" />
+    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1105">
+          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/quickstart.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1080">
+          <caret line="72" column="9" lean-forward="false" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/grafico.py" />
+    <entry file="file://$PROJECT_DIR$/captura/anatel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contribuicao/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="810">
+          <caret line="60" column="21" lean-forward="false" selection-start-line="60" selection-start-column="21" selection-end-line="60" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mecanismo/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/quickstart.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1095">
+          <caret line="80" column="10" lean-forward="false" selection-start-line="80" selection-start-column="10" selection-end-line="80" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/merge_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/analise/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="177" column="8" lean-forward="false" selection-start-line="177" selection-start-column="8" selection-end-line="177" selection-end-column="8" />
+        <state relative-caret-position="210">
+          <caret line="14" column="39" lean-forward="true" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#9106#9158#0" expanded="false" />
+            <element signature="e#9383#9866#0" expanded="false" />
+            <element signature="e#10081#12120#0" expanded="false" />
+            <element signature="e#13023#13259#0" expanded="false" />
+            <element signature="e#13555#14653#0" expanded="false" />
+            <element signature="e#18991#19961#0" expanded="false" />
+            <element signature="e#24835#26422#0" expanded="false" />
+            <element signature="e#26728#27982#0" expanded="false" />
+            <element signature="e#28280#30048#0" expanded="false" />
+            <element signature="e#30433#32191#0" expanded="false" />
+            <element signature="e#40260#42090#0" expanded="false" />
+            <element signature="e#42409#44228#0" expanded="false" />
+            <element signature="e#44543#46672#0" expanded="false" />
+            <element signature="e#46991#49109#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mecanismo/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="14" column="38" lean-forward="true" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analise/app_contribuicao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9180">
+          <caret line="1220" column="53" lean-forward="false" selection-start-line="1220" selection-start-column="53" selection-end-line="1220" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#11038#12316#0" expanded="false" />
+            <element signature="e#12382#12618#0" expanded="false" />
+            <element signature="e#12910#14940#0" expanded="false" />
+            <element signature="e#21236#26388#0" expanded="false" />
+            <element signature="e#26704#31623#0" expanded="false" />
+            <element signature="e#31664#32305#0" expanded="false" />
+            <element signature="e#32546#34627#0" expanded="false" />
+            <element signature="e#34939#36823#0" expanded="false" />
           </folding>
         </state>
       </provider>
