@@ -11,12 +11,12 @@ app = dash.Dash(__name__)
 server = app.server
 
 df = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
-                        '14aEKAajzWt5MFB3qlVVDNjabdgIO6Fkbkzkp_RgmdwE' +
-                        '/export?gid=1825424728&format=csv')
+                        '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU' +
+                        '/export?gid=133444484&format=csv', index_col = 0)
 
 df_mecanismo = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
-                        '1PKcStpSL_JBKOsUbwWbo5LF8i6MRvEReATAYJj0esqI' +
-                        '/export?gid=401459338&format=csv')
+                        '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU' +
+                        '/export?gid=0&format=csv', index_col = 0)
 
 df = pd.merge(df, df_mecanismo[["ID_Interno", "Ano", "Instrumento_de_Participacao", "Objetivo_participacao", "Indexacao_Tema"]], how = 'left', on = "ID_Interno")
 
@@ -26,7 +26,7 @@ df.Ano = df.Ano.apply(lambda x: int(x))
 
 del df_mecanismo
 
-colors_palette = ['#5977e3', '#7b9ff9', '#9ebeff', '#c0d4f5', '#dddcdc', '#f2cbb7', '#f7ac8e', '#ee8468', '#d65244']
+colors_palette = ['#e69f09', '#56b4e9', '#009e73', '#f0e442', '#0072b2', '#d55e00', '#cc79a7', '#000000']
 
 agency_options = [{'label': agency, 'value': agency}
                   for agency in set(df['Agência'])]
@@ -58,7 +58,7 @@ html.Div([
                          'color': colors['text_H1'],
                          },
             ),
-            html.H6('Contribuições', style = {'text-align': 'center', 'color': colors['text_n']}),
+            html.H6('Manifestações', style = {'text-align': 'center', 'color': colors['text_n']}),
         ],
         className='row'
     ),
@@ -112,23 +112,38 @@ html.Div([
     ], className='six columns offset-by-three'),
 
     html.Div([
+        html.P("Percentual do número de manifestações em relação ao total de todos os anos.",
+               style={'text-align': 'center'}),
+
         dcc.Graph(id='contribution_time'),
     ], className='ten columns offset-by-one', style={'margin-top': '35'},
     ),
 
     html.Div([
+        html.P('Percentual do número de contribuintes por ano e categoria',
+               style={'text-align': 'center'}),
+
         dcc.Graph(id='category_time'),
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
+        html.P('Percentual do número de contribuintes por instrumento de participação e ano',
+               style={'text-align': 'center'}),
+
         dcc.Graph(id='contribuicoes_tipo_audiencia')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
+        html.P('Percentual do número de impactos das manifestações por ano e objetivo',
+               style={'text-align': 'center'}),
+
         dcc.Graph(id='contribuicoes_ano_table')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
+        html.P('Percentual do número de impactos das manifestações por ano e tema',
+               style={'text-align': 'center'}),
+
         dcc.Graph(id='contribuicoes_ano_table_subject')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
@@ -139,11 +154,17 @@ html.Div([
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-            dcc.Graph(id='resposta_contribuicao')
+        html.P('Resposta de participantes por ano',
+               style={'text-align': 'center'}),
+
+        dcc.Graph(id='resposta_contribuicao')
         ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.Div([
+            html.P('Resposta dos impactos das manifestações por categoria',
+                   style={'text-align': 'center'}),
+
             dcc.Graph(id='resposta_contribuicao_categoria')
         ], className='ten columns offset-by-one', style={'margin-top': '35'}),
         html.Div([
@@ -164,7 +185,10 @@ html.Div([
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-            dcc.Graph(id='resposta_contribuicao_estatal')
+        html.P('Será que existe diferença no aceite quando o contribuinte é estatal?',
+               style={'text-align': 'center'}),
+
+        dcc.Graph(id='resposta_contribuicao_estatal')
         ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
@@ -175,6 +199,7 @@ html.Div([
     html.Div([
         html.P('Lista dos 6 contribuintes que mais participaram de audiências e consultas públicas.',
                style={'text-align': 'center'}),
+
         dcc.Graph(id='top_participants')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
@@ -190,7 +215,7 @@ html.Div([
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P('Lista dos 6 contribuintes que mais fizeram contribuições em audiências e consultas públicas.',
+        html.P('Lista dos 6 contribuintes que mais fizeram manifestações em audiências e consultas públicas.',
                style={'text-align': 'center'}),
         dcc.Graph(id='top_contributions')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
@@ -241,12 +266,12 @@ def update_num_mecanism(agency_value, int_part_value):
     if dff.shape[0] > 0:
         if int_part_value == 'Todos':
 
-            return "Para a agência {}, temos registro das contribuições começando no ano {} " \
+            return "Para a agência {}, temos registro das manifestações começando no ano {} " \
                    "e terminando em {}, totalizando {} registros.".format(agency_value, int(np.min(dff.Ano)),
                                                                         int(np.max(dff.Ano)), dff.shape[0])
 
         else:
-            return "Com essa combinação de filtros, para a agência {}, temos registro das contribuições começando no ano {} " \
+            return "Com essa combinação de filtros, para a agência {}, temos registro das manifestações começando no ano {} " \
                    "e terminando em {}, totalizando {} registros, que foram feitos de forma {}.".format(agency_value, int(np.min(dff.Ano)),
                                                                                                        int(np.max(dff.Ano)),dff.shape[0],
                                                                                                        aux_instru_part[int_part_value].lower())
@@ -297,7 +322,7 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
     traces = []
     trace = dict(
         type='bar',
-        x = [str(i) for i in dff.groupby('Ano').count()['Agência'].index],
+        x = ['Ano '+str(i) for i in dff.groupby('Ano').count()['Agência'].index],
         y = (dff.groupby('Ano').count()['Agência'].values/dff.shape[0])*100,
         text = a,
         textposition = 'auto',
@@ -318,7 +343,6 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Percentual do número de contribuições {}, em relação ao total, nos anos de {} até {} da agência {}.".format(year_options_value.lower(), np.min(dff.Ano), np.max(dff.Ano), agency_value),
         zoom=7,
         titlefont=dict(
             size=21,
@@ -408,7 +432,6 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
             t=45
         ),
         hovermode="closest",
-        title='Percentual de número de contribuintes por ano e categoria',
         zoom=7,
         titlefont = dict(
           size = 21,
@@ -443,9 +466,9 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     dff = filter_dataframe(df, agency_value, int_part_value)
     #dfff = dff[(dff.Ano >= my_slider_value[0]) & (dff.Ano <= my_slider_value[1])]
 
-    dff = dff[dff.Contribuicoes_Numero !='1?']
-    dff = dff[dff.Contribuicoes_Numero != 'N/C']
-    dff = dff[dff.Contribuicoes_Numero.isnull() == False]
+    dff = dff[dff.Numero_Manifestacoes !='1?']
+    dff = dff[dff.Numero_Manifestacoes != 'N/C']
+    dff = dff[dff.Numero_Manifestacoes.isnull() == False]
     dff = dff[dff.Ano.isnull() == False]
 
     aux = [i for i in dff.columns if "Contribuicoes_" in i]
@@ -462,9 +485,9 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
 
     traces = []
 
-    aux_sim = [str(i) + '%' for i in np.round([(dff['Contribuicoes_Sim'][dff.Ano == i].sum()/dff.Contribuicoes_Numero[dff.Ano == i].sum())*100 for i in aux_ano], 1)]
-    x = [(dff['Contribuicoes_Sim'][dff.Ano == i].sum()/dff.Contribuicoes_Numero[dff.Ano == i].sum())*100 for i in aux_ano]
-    x.append((dff['Contribuicoes_Sim'].sum()/dff.Contribuicoes_Numero.sum())*100)
+    aux_sim = [str(i) + '%' for i in np.round([(dff['Sim_impacto'][dff.Ano == i].sum()/dff.Numero_Manifestacoes[dff.Ano == i].sum())*100 for i in aux_ano], 1)]
+    x = [(dff['Sim_impacto'][dff.Ano == i].sum()/dff.Numero_Manifestacoes[dff.Ano == i].sum())*100 for i in aux_ano]
+    x.append((dff['Sim_impacto'].sum()/dff.Numero_Manifestacoes.sum())*100)
     aux_sim.append(str(np.round(x[-1]))+'%')
 
     trace1 = dict(
@@ -474,37 +497,18 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         orientation = 'h',
         text=aux_sim,
         textposition='auto',
-        name = 'Contribuições aceitas',
+        name = 'Impactou mudanças',
         marker = dict(
             color = colors_palette[0]
         )
     )
 
-    aux_Parcialmente = [str(i) + '%' for i in np.round([(dff['Contribuicoes_Parcialmente'][dff.Ano == i].sum()/dff.Contribuicoes_Numero[dff.Ano == i].sum())*100 for i in aux_ano], 1)]
-    x = [(dff['Contribuicoes_Parcialmente'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100 for i in
-         aux_ano]
-    x.append((dff['Contribuicoes_Parcialmente'].sum() / dff.Contribuicoes_Numero.sum()) * 100)
-    aux_Parcialmente.append(str(np.round(x[-1])) + '%')
-
-    trace2 = dict(
-        type='bar',
-        y=aux_ano_geral,
-        x=x,
-        orientation = 'h',
-        text=aux_Parcialmente,
-        textposition='auto',
-        name='Contribuições parcialmente aceitas',
-        marker = dict(
-            color = colors_palette[1]
-        )
-    )
-
     aux_Nao = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_Nao'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100
+        [(dff['Nao_impacto'][dff.Ano == i].sum() / dff.Numero_Manifestacoes[dff.Ano == i].sum()) * 100
          for i in aux_ano], 1)]
-    x = [(dff['Contribuicoes_Nao'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100 for i in
+    x = [(dff['Nao_impacto'][dff.Ano == i].sum() / dff.Numero_Manifestacoes[dff.Ano == i].sum()) * 100 for i in
          aux_ano]
-    x.append((dff['Contribuicoes_Nao'].sum() / dff.Contribuicoes_Numero.sum()) * 100)
+    x.append((dff['Nao_impacto'].sum() / dff.Numero_Manifestacoes.sum()) * 100)
     aux_Nao.append(str(np.round(x[-1])) + '%')
 
     trace3 = dict(
@@ -514,18 +518,18 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         orientation = 'h',
         text=aux_Nao,
         textposition='auto',
-        name = 'Contribuições recusadas',
+        name = 'Não impactou mudanças',
         marker = dict(
             color = colors_palette[2]
         )
     )
 
     aux_ND = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/D'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100
+        [(dff['N/D_impacto'][dff.Ano == i].sum() / dff.Numero_Manifestacoes[dff.Ano == i].sum()) * 100
          for i in aux_ano], 1)]
-    x = [(dff['Contribuicoes_N/D'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100 for i in
+    x = [(dff['N/D_impacto'][dff.Ano == i].sum() / dff.Numero_Manifestacoes[dff.Ano == i].sum()) * 100 for i in
          aux_ano]
-    x.append((dff['Contribuicoes_N/D'].sum() / dff.Contribuicoes_Numero.sum()) * 100)
+    x.append((dff['N/D_impacto'].sum() / dff.Numero_Manifestacoes.sum()) * 100)
     aux_ND.append(str(np.round(x[-1])) + '%')
 
     trace4 = dict(
@@ -542,12 +546,12 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     )
 
     aux_NA = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/A'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100
+        [(dff['N/A_impacto'][dff.Ano == i].sum() / dff.Numero_Manifestacoes[dff.Ano == i].sum()) * 100
          for i in aux_ano], 1)]
 
-    x = [(dff['Contribuicoes_N/A'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100 for i in
+    x = [(dff['N/A_impacto'][dff.Ano == i].sum() / dff.Numero_Manifestacoes[dff.Ano == i].sum()) * 100 for i in
          aux_ano]
-    x.append((dff['Contribuicoes_N/A'].sum() / dff.Contribuicoes_Numero.sum()) * 100)
+    x.append((dff['N/A_impacto'].sum() / dff.Numero_Manifestacoes.sum()) * 100)
     aux_NA.append(str(np.round(x[-1])) + '%')
 
     trace5 = dict(
@@ -564,11 +568,11 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     )
 
     aux_NC = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/C'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100
+        [(dff['N/C_impacto'][dff.Ano == i].sum() / dff.Numero_Manifestacoes[dff.Ano == i].sum()) * 100
          for i in aux_ano], 1)]
-    x = [(dff['Contribuicoes_N/C'][dff.Ano == i].sum() / dff.Contribuicoes_Numero[dff.Ano == i].sum()) * 100 for i in
+    x = [(dff['N/C_impacto'][dff.Ano == i].sum() / dff.Numero_Manifestacoes[dff.Ano == i].sum()) * 100 for i in
          aux_ano]
-    x.append((dff['Contribuicoes_N/C'].sum() / dff.Contribuicoes_Numero.sum()) * 100)
+    x.append((dff['N/C_impacto'].sum() / dff.Numero_Manifestacoes.sum()) * 100)
     aux_NC.append(str(np.round(x[-1])) + '%')
 
     trace6 = dict(
@@ -618,9 +622,9 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     dff = filter_dataframe(df, agency_value, int_part_value)
     dff = dff[(dff.Ano >= my_slider_value[0]) & (dff.Ano <= my_slider_value[1])]
 
-    dff = dff[dff.Contribuicoes_Numero !='1?']
-    dff = dff[dff.Contribuicoes_Numero != 'N/C']
-    dff = dff[dff.Contribuicoes_Numero.isnull() == False]
+    dff = dff[dff.Numero_Manifestacoes !='1?']
+    dff = dff[dff.Numero_Manifestacoes != 'N/C']
+    dff = dff[dff.Numero_Manifestacoes.isnull() == False]
     dff = dff[dff.Ano.isnull() == False]
 
     aux = [i for i in dff.columns if "Contribuicoes_" in i]
@@ -635,16 +639,16 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     traces = []
 
     aux_sim = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_Sim'][dff.Categoria_Participante == i].sum() / dff.Contribuicoes_Numero[
+        [(dff['Sim_impacto'][dff.Categoria_Participante == i].sum() / dff.Numero_Manifestacoes[
             dff.Categoria_Participante == i].sum()) * 100 for i in
          aux_ano], 1)]
 
     trace1 = dict(
         type='bar',
         y=aux_ano,
-        x=[(dff['Contribuicoes_Sim'][dff.Categoria_Participante == i].sum()/dff.Contribuicoes_Numero[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
+        x=[(dff['Sim_impacto'][dff.Categoria_Participante == i].sum()/dff.Numero_Manifestacoes[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
         orientation = 'h',
-        name = 'Contribuições aceitas',
+        name = 'Impactou mudanças',
         text=aux_sim,
         textposition='auto',
         marker = dict(
@@ -652,35 +656,17 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         )
     )
 
-    aux_Parcialmente = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_Parcialmente'][dff.Categoria_Participante == i].sum() / dff.Contribuicoes_Numero[
-            dff.Categoria_Participante == i].sum()) * 100
-         for i in aux_ano], 1)]
-
-    trace2 = dict(
-        type='bar',
-        y=aux_ano,
-        x=[(dff['Contribuicoes_Parcialmente'][dff.Categoria_Participante == i].sum()/dff.Contribuicoes_Numero[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
-        orientation = 'h',
-        name='Contribuições parcialmente aceitas',
-        text=aux_Parcialmente,
-        textposition='auto',
-        marker = dict(
-            color = colors_palette[1]
-        )
-    )
-
     aux_Nao = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_Nao'][dff.Categoria_Participante == i].sum() / dff.Contribuicoes_Numero[
+        [(dff['Nao_impacto'][dff.Categoria_Participante == i].sum() / dff.Numero_Manifestacoes[
             dff.Categoria_Participante == i].sum()) * 100
          for i in aux_ano], 1)]
 
     trace3 = dict(
         type='bar',
         y=aux_ano,
-        x=[(dff['Contribuicoes_Nao'][dff.Categoria_Participante == i].sum()/dff.Contribuicoes_Numero[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
+        x=[(dff['Nao_impacto'][dff.Categoria_Participante == i].sum()/dff.Numero_Manifestacoes[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
         orientation = 'h',
-        name = 'Contribuições recusadas',
+        name = 'Não impactou mudanças',
           text=aux_Nao,
         textposition='auto',
         marker = dict(
@@ -689,14 +675,14 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     )
 
     aux_ND = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/D'][dff.Categoria_Participante == i].sum() / dff.Contribuicoes_Numero[
+        [(dff['N/D_impacto'][dff.Categoria_Participante == i].sum() / dff.Numero_Manifestacoes[
             dff.Categoria_Participante == i].sum()) * 100
          for i in aux_ano], 1)]
 
     trace4 = dict(
         type='bar',
         y=aux_ano,
-        x=[(dff['Contribuicoes_N/D'][dff.Categoria_Participante == i].sum()/dff.Contribuicoes_Numero[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
+        x=[(dff['N/D_impacto'][dff.Categoria_Participante == i].sum()/dff.Numero_Manifestacoes[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
         orientation = 'h',
         name='Não disponível',
       text=aux_ND,
@@ -707,7 +693,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     )
 
     aux_NA = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/A'][dff.Categoria_Participante == i].sum() / dff.Contribuicoes_Numero[
+        [(dff['N/A_impacto'][dff.Categoria_Participante == i].sum() / dff.Numero_Manifestacoes[
             dff.Categoria_Participante == i].sum()) * 100
          for i in aux_ano], 1)]
 
@@ -715,7 +701,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     trace5 = dict(
         type='bar',
         y=aux_ano,
-        x=[(dff['Contribuicoes_N/A'][dff.Categoria_Participante == i].sum()/dff.Contribuicoes_Numero[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
+        x=[(dff['N/A_impacto'][dff.Categoria_Participante == i].sum()/dff.Numero_Manifestacoes[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
         orientation = 'h',
         name = 'Recusado por não se aplicar',
       text=aux_NA,
@@ -726,7 +712,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     )
 
     aux_NC = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/C'][dff.Categoria_Participante == i].sum() / dff.Contribuicoes_Numero[
+        [(dff['N/C_impacto'][dff.Categoria_Participante == i].sum() / dff.Numero_Manifestacoes[
             dff.Categoria_Participante == i].sum()) * 100
          for i in aux_ano], 1)]
 
@@ -734,7 +720,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     trace6 = dict(
         type='bar',
         y=aux_ano,
-        x=[(dff['Contribuicoes_N/C'][dff.Categoria_Participante == i].sum()/dff.Contribuicoes_Numero[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
+        x=[(dff['N/C_impacto'][dff.Categoria_Participante == i].sum()/dff.Numero_Manifestacoes[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
         orientation = 'h',
         name = 'Não está claro',
       text=aux_NC,
@@ -762,7 +748,6 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title='Resposta das contribuições por categoria',
         zoom=7,
     )
     figure = dict(data=traces, layout=layout)
@@ -777,9 +762,9 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     dff = filter_dataframe(df, agency_value, int_part_value)
     #dfff = dff[(dff.Ano >= my_slider_value[0]) & (dff.Ano <= my_slider_value[1])]
 
-    dff = dff[dff.Contribuicoes_Numero !='1?']
-    dff = dff[dff.Contribuicoes_Numero != 'N/C']
-    dff = dff[dff.Contribuicoes_Numero.isnull() == False]
+    dff = dff[dff.Numero_Manifestacoes !='1?']
+    dff = dff[dff.Numero_Manifestacoes != 'N/C']
+    dff = dff[dff.Numero_Manifestacoes.isnull() == False]
     dff = dff[dff.Ano.isnull() == False]
     dff = dff[dff.Estatal.isnull() == False]
     dff = dff[dff.Estatal !='?']
@@ -796,15 +781,15 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     traces = []
 
     aux_sim = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_Sim'][(dff.Estatal == i)].sum() / dff.Contribuicoes_Numero[(dff.Estatal == i)].sum()) * 100 for i in
+        [(dff['Sim_impacto'][(dff.Estatal == i)].sum() / dff.Numero_Manifestacoes[(dff.Estatal == i)].sum()) * 100 for i in
          estatal_ano], 1)]
 
     trace1 = dict(
         type='bar',
         y=estatal_ano,
-        x=[(dff['Contribuicoes_Sim'][(dff.Estatal == i)].sum()/dff.Contribuicoes_Numero[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
+        x=[(dff['Sim_impacto'][(dff.Estatal == i)].sum()/dff.Numero_Manifestacoes[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
         orientation = 'h',
-        name = 'Contribuições aceitas',
+        name = 'Impactou mudanças',
       text=aux_sim,
         textposition='auto',
         marker = dict(
@@ -812,35 +797,16 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         )
     )
 
-    aux_Parcialmente = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_Parcialmente'][(dff.Estatal == i)].sum() / dff.Contribuicoes_Numero[
-            (dff.Estatal == i)].sum()) * 100 for i in
-         estatal_ano], 1)]
-
-
-    trace2 = dict(
-        type='bar',
-        y=estatal_ano,
-        x=[(dff['Contribuicoes_Parcialmente'][(dff.Estatal == i)].sum()/dff.Contribuicoes_Numero[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
-        orientation = 'h',
-        name='Contribuições parcialmente aceitas',
-      text=aux_Parcialmente,
-        textposition='auto',
-        marker = dict(
-            color = colors_palette[1]
-        )
-    )
-
     aux_Nao = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_Nao'][(dff.Estatal == i)].sum() / dff.Contribuicoes_Numero[(dff.Estatal == i)].sum()) * 100 for i in
+        [(dff['Nao_impacto'][(dff.Estatal == i)].sum() / dff.Numero_Manifestacoes[(dff.Estatal == i)].sum()) * 100 for i in
          estatal_ano], 1)]
 
     trace3 = dict(
         type='bar',
         y=estatal_ano,
-        x=[(dff['Contribuicoes_Nao'][(dff.Estatal == i)].sum()/dff.Contribuicoes_Numero[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
+        x=[(dff['Nao_impacto'][(dff.Estatal == i)].sum()/dff.Numero_Manifestacoes[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
         orientation = 'h',
-        name = 'Contribuições recusadas',
+        name = 'Não impactou mudanças',
       text=aux_Nao,
         textposition='auto',
         marker = dict(
@@ -849,13 +815,13 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     )
 
     aux_ND = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/D'][(dff.Estatal == i)].sum() / dff.Contribuicoes_Numero[(dff.Estatal == i)].sum()) * 100 for i in
+        [(dff['N/D_impacto'][(dff.Estatal == i)].sum() / dff.Numero_Manifestacoes[(dff.Estatal == i)].sum()) * 100 for i in
          estatal_ano], 1)]
 
     trace4 = dict(
         type='bar',
         y=estatal_ano,
-        x=[(dff['Contribuicoes_N/D'][(dff.Estatal == i)].sum()/dff.Contribuicoes_Numero[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
+        x=[(dff['N/D_impacto'][(dff.Estatal == i)].sum()/dff.Numero_Manifestacoes[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
         orientation = 'h',
         name='Não disponível',
       text=aux_ND,
@@ -866,13 +832,13 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     )
 
     aux_NA = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/A'][(dff.Estatal == i)].sum() / dff.Contribuicoes_Numero[(dff.Estatal == i)].sum()) * 100 for i in
+        [(dff['N/A_impacto'][(dff.Estatal == i)].sum() / dff.Numero_Manifestacoes[(dff.Estatal == i)].sum()) * 100 for i in
          estatal_ano], 1)]
 
     trace5 = dict(
         type='bar',
         y=estatal_ano,
-        x=[(dff['Contribuicoes_N/A'][(dff.Estatal == i)].sum()/dff.Contribuicoes_Numero[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
+        x=[(dff['N/A_impacto'][(dff.Estatal == i)].sum()/dff.Numero_Manifestacoes[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
         orientation = 'h',
         name = 'Recusado por não se aplicar',
       text=aux_NA,
@@ -884,14 +850,14 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
 
 
     aux_NC = [str(i) + '%' for i in np.round(
-        [(dff['Contribuicoes_N/C'][(dff.Estatal == i)].sum() / dff.Contribuicoes_Numero[(dff.Estatal == i)].sum()) * 100 for i in
+        [(dff['N/C_impacto'][(dff.Estatal == i)].sum() / dff.Numero_Manifestacoes[(dff.Estatal == i)].sum()) * 100 for i in
          estatal_ano], 1)]
 
 
     trace6 = dict(
         type='bar',
         y=estatal_ano,
-        x=[(dff['Contribuicoes_N/C'][(dff.Estatal == i)].sum()/dff.Contribuicoes_Numero[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
+        x=[(dff['N/C_impacto'][(dff.Estatal == i)].sum()/dff.Numero_Manifestacoes[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
         orientation = 'h',
         name = 'Não está claro',
       text=aux_NC,
@@ -920,7 +886,6 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title='O contribuinte é estatal?',
         zoom=7,
     )
     figure = dict(data=traces, layout=layout)
@@ -1004,7 +969,6 @@ def make_contribution_time_figure(agency_value, year_options_value):
             t=45
         ),
         hovermode="closest",
-        title='Percentual de número de contribuintes por instrumento de participação e ano',
         zoom=7,
         titlefont = dict(
           size = 21,
@@ -1038,11 +1002,11 @@ def make_contribution_time_figure(agency_value, year_options_value):
 def make_object_table_figure(agency_value, int_part_value, year_options_value):
     dff = filter_dataframe(df, agency_value, int_part_value)
 
-    aux = [i for i in dff.index if 'N' not in dff.loc[i,'Contribuicoes_Numero']]
+    aux = [i for i in dff.index if 'N' not in dff.loc[i,'Numero_Manifestacoes']]
     dff = dff.loc[aux,:]
-    dff.Contribuicoes_Numero = dff.Contribuicoes_Numero.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
 
-    table = dff.pivot_table(values='Contribuicoes_Numero', index=['Ano'], columns=['Objetivo_participacao'], aggfunc=np.sum, fill_value = 0, dropna = False)
+    table = dff.pivot_table(values='Numero_Manifestacoes', index=['Ano'], columns=['Objetivo_participacao'], aggfunc=np.sum, fill_value = 0, dropna = False)
 
     table.loc['Total'] = table.sum(0)
 
@@ -1103,7 +1067,6 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Percentual do número de contribuições por ano e objetivo",
         zoom=7,
     )
 
@@ -1118,11 +1081,11 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 def make_object_table_figure(agency_value, int_part_value, year_options_value):
     dff = filter_dataframe(df, agency_value, int_part_value)
 
-    aux = [i for i in dff.index if 'N' not in dff.loc[i,'Contribuicoes_Numero']]
+    aux = [i for i in dff.index if 'N' not in dff.loc[i,'Numero_Manifestacoes']]
     dff = dff.loc[aux,:]
-    dff.Contribuicoes_Numero = dff.Contribuicoes_Numero.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
 
-    table = dff.pivot_table(values='Contribuicoes_Numero', index=['Ano'], columns=['Indexacao_Tema'], aggfunc=np.sum, fill_value = 0, dropna = False)
+    table = dff.pivot_table(values='Numero_Manifestacoes', index=['Ano'], columns=['Indexacao_Tema'], aggfunc=np.sum, fill_value = 0, dropna = False)
 
     table.loc['Total'] = table.sum(0)
 
@@ -1183,7 +1146,6 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Percentual do número de contribuições por ano e objetivo",
         zoom=7,
     )
 
@@ -1200,26 +1162,26 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     size = len(dff.ID_Interno.drop_duplicates())
 
-    dff = dff[['Quem', 'Contribuicoes_Numero']]
+    dff = dff[['Quem', 'Numero_Manifestacoes']]
 
-    dff_table = dff.groupby('Quem').count().sort_values('Contribuicoes_Numero', ascending=False).drop('N/D')
+    dff_table = dff.groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
 
-    dff_table['Percentual de participações em relação ao total'] = np.round((dff_table['Contribuicoes_Numero']/size)*100,2)
+    dff_table['Percentual de participações em relação ao total'] = np.round((dff_table['Numero_Manifestacoes']/size)*100,2)
 
-    aux = [i for i in dff.index if 'N' not in dff.loc[i,'Contribuicoes_Numero']]
+    aux = [i for i in dff.index if 'N' not in dff.loc[i,'Numero_Manifestacoes']]
     dff = dff.loc[aux,:]
-    dff.Contribuicoes_Numero = dff.Contribuicoes_Numero.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
 
     dff_table = dff_table.merge(dff.groupby('Quem').sum(), left_index=True, right_index=True)
 
-    dff_table.columns = ['Número de participação', 'Percentual de participações', 'Número total de contribuições']
+    dff_table.columns = ['Número de participação', 'Percentual de participações', 'Número total de manifestações']
 
-    dff_table['Média de contribuições por participação'] = np.round(dff_table['Número total de contribuições']/dff_table['Número de participação'], 2)
+    dff_table['Média de manifestações por participação'] = np.round(dff_table['Número total de manifestações']/dff_table['Número de participação'], 2)
 
-    total_contributions = dff_table['Número total de contribuições'].sum()
+    total_contributions = dff_table['Número total de manifestações'].sum()
 
-    dff_table['Percentual de contribuições em relação total'] = np.round(
-        dff_table['Número total de contribuições'] / total_contributions*100, 2)
+    dff_table['Percentual de manifestações em relação total'] = np.round(
+        dff_table['Número total de manifestações'] / total_contributions*100, 2)
 
     names_table = ['Contribuidor']
     names_table.extend(list(dff_table.columns))
@@ -1292,26 +1254,26 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     size = len(dff.ID_Interno.drop_duplicates())
 
-    dff = dff[['Quem', 'Contribuicoes_Numero']]
+    dff = dff[['Quem', 'Numero_Manifestacoes']]
 
-    dff_table = dff.groupby('Quem').count().sort_values('Contribuicoes_Numero', ascending=False).drop('N/D')
+    dff_table = dff.groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
 
-    dff_table['Percentual de participações'] = np.round((dff_table['Contribuicoes_Numero']/size)*100,2)
+    dff_table['Percentual de participações'] = np.round((dff_table['Numero_Manifestacoes']/size)*100,2)
 
-    aux = [i for i in dff.index if 'N' not in dff.loc[i,'Contribuicoes_Numero']]
+    aux = [i for i in dff.index if 'N' not in dff.loc[i,'Numero_Manifestacoes']]
     dff = dff.loc[aux,:]
-    dff.Contribuicoes_Numero = dff.Contribuicoes_Numero.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
 
     dff_table = dff_table.merge(dff.groupby('Quem').sum(), left_index=True, right_index=True)
 
-    dff_table.columns = ['Número de participação', 'Percentual de participações em relação ao total', 'Número total de contribuições']
+    dff_table.columns = ['Número de participação', 'Percentual de participações em relação ao total', 'Número total de manifestações']
 
-    dff_table['Média de contribuições por participação'] = np.round(dff_table['Número total de contribuições']/dff_table['Número de participação'], 2)
+    dff_table['Média de manifestações por participação'] = np.round(dff_table['Número total de manifestações']/dff_table['Número de participação'], 2)
 
-    total_contributions = dff_table['Número total de contribuições'].sum()
+    total_contributions = dff_table['Número total de manifestações'].sum()
 
-    dff_table['Percentual de contribuições em relação ao total'] = np.round(
-        dff_table['Número total de contribuições'] / total_contributions*100, 2)
+    dff_table['Percentual de manifestações em relação ao total'] = np.round(
+        dff_table['Número total de manifestações'] / total_contributions*100, 2)
 
     names_table = ['Contribuidor']
     names_table.extend(list(dff_table.columns))
@@ -1329,7 +1291,7 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     aux_color = []
 
-    dff_table = dff_table.sort_values('Número total de contribuições', ascending=False)
+    dff_table = dff_table.sort_values('Número total de manifestações', ascending=False)
 
     dff_table = dff_table[0:6]
 
@@ -1383,13 +1345,13 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 def make_object_time_figure(agency_value, int_part_value, year_options_value):
     dff = filter_dataframe(df, agency_value, int_part_value)
 
-    dff = dff[['Quem', 'Contribuicoes_Numero', 'Contribuicoes_Sim', 'Contribuicoes_Parcialmente', 'Contribuicoes_Nao', 'Contribuicoes_N/D','Contribuicoes_N/A', 'Contribuicoes_N/C']]
+    dff = dff[['Quem', 'Numero_Manifestacoes', 'Sim_impacto', 'Nao_impacto', 'N/D_impacto','N/A_impacto', 'N/C_impacto']]
 
-    dff_table = dff[['Quem', 'Contribuicoes_Numero']].groupby('Quem').count().sort_values('Contribuicoes_Numero', ascending=False).drop('N/D')
+    dff_table = dff[['Quem', 'Numero_Manifestacoes']].groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
 
-    aux = [i for i in dff.index if 'N' not in dff.loc[i, 'Contribuicoes_Numero']]
+    aux = [i for i in dff.index if 'N' not in dff.loc[i, 'Numero_Manifestacoes']]
     dff = dff.loc[aux, :]
-    dff.Contribuicoes_Numero = dff.Contribuicoes_Numero.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
 
     dff_table = dff_table.merge(dff.groupby('Quem').sum(), left_index=True, right_index=True)
 
@@ -1399,14 +1361,14 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 
     dff_table = dff_table[0:6]
 
-    aux_contribuicoes = ['Contribuicoes_Sim', 'Contribuicoes_Parcialmente', 'Contribuicoes_Nao', 'Contribuicoes_N/D',
-               'Contribuicoes_N/A', 'Contribuicoes_N/C']
+    aux_contribuicoes = ['Sim_impacto', 'Nao_impacto', 'N/D_impacto',
+               'N/A_impacto', 'N/C_impacto']
 
     dff_table[aux_contribuicoes] = dff_table[aux_contribuicoes].apply(lambda x: (x/x.sum())*100, axis = 1)
 
-    aux_dic = {'Contribuicoes_Sim': 'Contribuições aceitas', 'Contribuicoes_Parcialmente': 'Contribuições parcialmente aceitas',
-               'Contribuicoes_Nao': 'Contribuições recusadas', 'Contribuicoes_N/D': 'Não disponível',
-               'Contribuicoes_N/A': 'Recusado por não se aplicar', 'Contribuicoes_N/C': 'Não está claro'}
+    aux_dic = {'Sim_impacto': 'Impactou mudanças',
+               'Nao_impacto': 'Não impactou mudanças', 'N/D_impacto': 'Não disponível',
+               'N/A_impacto': 'Recusado por não se aplicar', 'N/C_impacto': 'Não está claro'}
 
     traces = []
 
@@ -1463,13 +1425,13 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 def make_object_time_figure(agency_value, int_part_value, year_options_value):
     dff = filter_dataframe(df, agency_value, int_part_value)
 
-    dff = dff[['Quem', 'Contribuicoes_Numero', 'Contribuicoes_Sim', 'Contribuicoes_Parcialmente', 'Contribuicoes_Nao', 'Contribuicoes_N/D','Contribuicoes_N/A', 'Contribuicoes_N/C']]
+    dff = dff[['Quem', 'Numero_Manifestacoes', 'Sim_impacto', 'Nao_impacto', 'N/D_impacto','N/A_impacto', 'N/C_impacto']]
 
-    dff_table = dff[['Quem', 'Contribuicoes_Numero']].groupby('Quem').count().sort_values('Contribuicoes_Numero', ascending=False).drop('N/D')
+    dff_table = dff[['Quem', 'Numero_Manifestacoes']].groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
 
-    aux = [i for i in dff.index if 'N' not in dff.loc[i, 'Contribuicoes_Numero']]
+    aux = [i for i in dff.index if 'N' not in dff.loc[i, 'Numero_Manifestacoes']]
     dff = dff.loc[aux, :]
-    dff.Contribuicoes_Numero = dff.Contribuicoes_Numero.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
 
     dff_table = dff_table.merge(dff.groupby('Quem').sum(), left_index=True, right_index=True)
 
@@ -1477,18 +1439,18 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 
     dff_table['Contribuidor'] = dff_table['Contribuidor'].apply(lambda x: x.split('(')[0])
 
-    dff_table = dff_table.sort_values('Contribuicoes_Numero_y', ascending = False)
+    dff_table = dff_table.sort_values('Numero_Manifestacoes_y', ascending = False)
 
     dff_table = dff_table[0:6]
 
-    aux_contribuicoes = ['Contribuicoes_Sim', 'Contribuicoes_Parcialmente', 'Contribuicoes_Nao', 'Contribuicoes_N/D',
-               'Contribuicoes_N/A', 'Contribuicoes_N/C']
+    aux_contribuicoes = ['Sim_impacto', 'Nao_impacto', 'N/D_impacto',
+               'N/A_impacto', 'N/C_impacto']
 
     dff_table[aux_contribuicoes] = dff_table[aux_contribuicoes].apply(lambda x: (x/x.sum())*100, axis = 1)
 
-    aux_dic = {'Contribuicoes_Sim': 'Contribuições aceitas', 'Contribuicoes_Parcialmente': 'Contribuições parcialmente aceitas',
-               'Contribuicoes_Nao': 'Contribuições recusadas', 'Contribuicoes_N/D': 'Não disponível',
-               'Contribuicoes_N/A': 'Recusado por não se aplicar', 'Contribuicoes_N/C': 'Não está claro'}
+    aux_dic = {'Sim_impacto': 'Impactou mudanças',
+               'Nao_impacto': 'Não impactou mudanças', 'N/D_impacto': 'Não disponível',
+               'N/A_impacto': 'Recusado por não se aplicar', 'N/C_impacto': 'Não está claro'}
 
     traces = []
 

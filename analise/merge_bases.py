@@ -1,3 +1,4 @@
+from df2gspread import df2gspread as d2g
 import pandas as pd
 
 def import_base(agencia):
@@ -9,11 +10,15 @@ def import_base(agencia):
     '''
 
     agencia_dic = {'ana': '1Lj9Gz_JBL5h8j339fpcxlf8m6tfLApUNT52vsvw84D0',
-                   'ancine': '1ZFpDOLANZwq1smqV49GBpMRQLB_3tbO_xQmyPOn64ug'}
+                   'ancine': '1ZFpDOLANZwq1smqV49GBpMRQLB_3tbO_xQmyPOn64ug',
+                   'bacen': '1VgYH38N1f8UqBjMMRbgKAVPCrcIyStwRBhHPKa716sM',
+                   'antaq': '1mKSExdlv7V9OM7OQvjmA68OWUMA5l3n2lhPR5o1Y2r0',
+                   'ans': '1dO8VWSK4YDsCuwyyN4SdRmBXKwBEQbrwJweJwmn7q14',
+                   'anatel': '1RqaN15c0uE3qRT2egREbXcoUyFr__sQI4wUUkUtvy3k'}
 
     contribuicoes = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
                                 agencia_dic[agencia] +
-                                '/export?gid=1665848903&format=csv', encoding = 'utf-8')
+                                '/export?gid=1665848903&format=csv', encoding = 'utf-8', decimal = ',')
 
 
     aux_drop = [i for i in contribuicoes.columns if 'Unnamed' in i]
@@ -21,25 +26,27 @@ def import_base(agencia):
 
     mecanismos = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
                                  agencia_dic[agencia] +
-                                 '/export?gid=256430091&format=csv')
+                                 '/export?gid=256430091&format=csv', decimal = ',')
 
     aux_drop = [i for i in mecanismos.columns if 'Unnamed' in i]
     mecanismos = mecanismos.drop(aux_drop, axis=1)
 
     return contribuicoes, mecanismos
 
-ana_contribuicoes, ana_mecanismos = import_base('ana')
-ancine_contribuicoes, ancine_mecanismos = import_base('ancine')
+agencias_contribuicoes = pd.DataFrame({})
+agencias_mecanismos = pd.DataFrame({})
 
-agencias_contribuicoes = pd.concat([ana_contribuicoes, ancine_contribuicoes])
-agencias_mecanismos = pd.concat([ana_mecanismos, ancine_mecanismos])
+for i in ['ana','ancine','bacen','antaq','ans','anatel']:
+    contribuicoes, mecanismos = import_base(i)
 
-agencias_mecanismos = agencias_mecanismos.reset_index(drop = True)
-agencias_contribuicoes= agencias_contribuicoes.reset_index(drop = True)
+    agencias_contribuicoes = pd.concat([agencias_contribuicoes, contribuicoes])
+    agencias_mecanismos = pd.concat([agencias_mecanismos, mecanismos])
+
+    agencias_mecanismos = agencias_mecanismos.reset_index(drop=True)
+    agencias_contribuicoes = agencias_contribuicoes.reset_index(drop=True)
 
 agencias_contribuicoes.Categoria_Participante[agencias_contribuicoes['Entidade_Representativa'] == "Sim"] = 'Entidade Representativa'
 agencias_contribuicoes = agencias_contribuicoes.drop('Entidade_Representativa', axis = 1)
-
 
 def remove_r(x):
     if type(x) == str:
@@ -56,10 +63,10 @@ for i in agencias_mecanismos.columns:
 for i in agencias_contribuicoes.columns:
     agencias_contribuicoes[i] = agencias_contribuicoes[i].apply(lambda x: remove_r(x))
 
+spreadsheetId = '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU'
 
-agencias_mecanismos.to_csv('agencias_mecanismos.csv', index = False)
-agencias_contribuicoes.to_csv('agencias_contribuicoes.csv', index =False)
-
+d2g.upload(agencias_mecanismos, spreadsheetId, wks_name="mecanismo_participacao")
+d2g.upload(agencias_contribuicoes, spreadsheetId, wks_name="contribuicoes")
 
 
 #https://erikrood.com/Posts/py_gsheets.html

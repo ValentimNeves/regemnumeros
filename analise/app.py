@@ -11,11 +11,10 @@ app = dash.Dash(__name__)
 server = app.server
 
 df = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
-                 '1PKcStpSL_JBKOsUbwWbo5LF8i6MRvEReATAYJj0esqI' +
-                 '/export?gid=401459338&format=csv')
+                 '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU' +
+                 '/export?gid=0&format=csv', index_col = 0)
 
 df.Produto_Final_Data = df.Produto_Final_Data.apply(lambda x: str(x).split(';')[0])
-
 
 agency_options = [{'label': agency, 'value': agency}
                   for agency in set(df['Agência'])]
@@ -29,7 +28,7 @@ type_part_options = [{'label': 'Todos', 'value': 'Todos'},
                      {'label': 'Não presencial', 'value': 'PNP'},
                      {'label': 'Presencial e não presencial', 'value': 'PP e PNP'}]
 
-colors_palette = ['#5977e3', '#7b9ff9', '#9ebeff', '#c0d4f5', '#dddcdc', '#f2cbb7', '#f7ac8e', '#ee8468', '#d65244']
+colors_palette = ['#e69f09', '#56b4e9', '#009e73', '#f0e442', '#0072b2', '#d55e00', '#cc79a7', '#000000']
 
 objective_options = []
 subject_options = []
@@ -203,11 +202,18 @@ html.Div([
             className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
+        html.P('Média do tempo da disponibilização do relatório após a convocação por objetivo das audiências ou consultas públicas, em dias.',
+               style={'text-align': 'center'}),
+
         dcc.Graph(id='mean_time_type1_table_obj')
     ],
         className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
+        html.P(
+            'Média do tempo da disponibilização do relatório após a convocação por tema das audiências ou consultas públicas, em dias.',
+            style={'text-align': 'center'}),
+
         dcc.Graph(id='mean_time_type1_table_subject')
     ],
         className='ten columns offset-by-one', style={'margin-top': '35'}),
@@ -218,16 +224,28 @@ html.Div([
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-            dcc.Graph(id='mean_time_type2')
-        ],
-            className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+        html.P(
+            "Média do tempo da disponibilização do produto final após a convocação, em dias.",
+            style={'text-align': 'center'}),
+
+        dcc.Graph(id='mean_time_type2')
+    ],
+        className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
+        html.P(
+            "Média do tempo da disponibilização do produto final após a convocação por objetivo das audiências ou consultas públicas, em dias.",
+            style={'text-align': 'center'}),
+
         dcc.Graph(id='mean_time_type2_table_obj')
     ],
         className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
+        html.P(
+            "Média do tempo da disponibilização do produto final após a convocação por tema das audiências ou consultas públicas, em dias.",
+            style={'text-align': 'center'}),
+
         dcc.Graph(id='mean_time_type2_table_subject')
     ],
         className='ten columns offset-by-one', style={'margin-top': '35'}),
@@ -238,13 +256,25 @@ html.Div([
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-            dcc.Graph(id = 'mean_contribution')
+        html.P(
+            "Média do número de contribuintes que participaram de audiências ou consultas.",
+            style={'text-align': 'center'}),
+
+        dcc.Graph(id = 'mean_contribution')
         ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
     html.Div([
+        html.P(
+            "Média do número de contribuintes que participaram de audiências ou consultas por objetivo",
+            style={'text-align': 'center'}),
+
         dcc.Graph(id = 'table_obj')
     ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
+        html.P(
+            "Média do número de contribuintes que participaram de audiências ou consultas por tema",
+            style={'text-align': 'center'}),
+
         dcc.Graph(id='table_subject')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
@@ -359,7 +389,7 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
     traces = []
     trace = dict(
         type='bar',
-        x = [str(i) for i in dff.groupby('Ano').count()['Agência'].index],
+        x = ['Ano '+str(i) for i in dff.groupby('Ano').count()['Agência'].index],
         y = (dff.groupby('Ano').count()['Agência'].values/dff.shape[0])*100,
         text=a,
         textposition = 'auto',
@@ -664,7 +694,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
         y.append(np.mean([i for i in dff[dff.Ano == i].time_days if type(i) != str]))
         x.append(str(i))
 
-        y2.append(np.mean([i for i in dff.time_days if type(i) != str ]))
+        y2.append(np.mean([i for i in dff.time_days if type(i) != str]))
         x2.append(str(i))
 
     traces = []
@@ -755,7 +785,6 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do tempo da disponibilização do relatório após a convocação, em dias.",
         zoom=7,
         xaxis=dict(showgrid=False),
         yaxis=dict(showgrid=False)
@@ -825,7 +854,6 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do tempo da disponibilização do produto final após a convocação, em dias.",
         zoom=7,
         xaxis=dict(showgrid=False),
         yaxis=dict(showgrid=False)
@@ -884,7 +912,6 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do número de contribuintes que participaram de audiências",
         zoom=7,
         xaxis=dict(showgrid=False),
         yaxis=dict(showgrid=False)
@@ -907,6 +934,10 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     dff.Quantos_participaram = dff.Quantos_participaram.apply(lambda x: float(x))
 
     table = dff.pivot_table(values='Quantos_participaram', index=['Ano'], columns=['Objetivo_participacao'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='Quantos_participaram', columns=['Objetivo_participacao'],
+                            aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
@@ -917,12 +948,17 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     names_table = ['<b>'+i+'</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0,i] = '<b>' + str(table_total.iloc[0,i]) + '</b>'
+
+    table = table.append(table_total)
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
+    for i in range(0,len(table.Ano)):
         if i%2 != 0:
             aux_color.append(rowOddColor)
         else:
@@ -941,6 +977,7 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
         ),
         cells = dict(
            values = table.values.T,
+            line = dict(color = 'white'),
             fill = dict(
                 color=[aux_color]
                 ),
@@ -959,7 +996,6 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do número de contribuintes que participaram de audiências por objetivo",
         zoom=7,
     )
 
@@ -985,28 +1021,37 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
     dff.Quantos_participaram = dff.Quantos_participaram.apply(lambda x: float(x))
 
     table = dff.pivot_table(values='Quantos_participaram', index=['Ano'], columns=['Indexacao_Tema'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='Quantos_participaram', columns=['Indexacao_Tema'],
+                            aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
     names_table = ['<b>'+i+'</b>' for i in names_table]
 
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0,i] = '<b>' + str(table_total.iloc[0,i]) + '</b>'
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
+    for i in range(0,len(table.Ano)):
         if i%2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
-
 
     traces = []
 
@@ -1021,11 +1066,13 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
         ),
         cells = dict(
            values = table.values.T,
+            line = dict(color = 'white'),
             fill = dict(
                 color=[aux_color]
                 ),
             )
         )
+
     traces.append(trace)
 
     layout = dict(
@@ -1038,7 +1085,6 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do número de contribuintes que participaram de audiências por tema",
         zoom=7,
     )
 
@@ -1056,23 +1102,34 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     dff['time_days'] = data_calculo(dff, 'Convocacao_Data', 'Contribuicao_data_final')
 
     table = dff.pivot_table(values='time_days', index=['Ano'], columns=['Objetivo_participacao'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='time_days', columns=['Objetivo_participacao'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
-    names_table = ['<b>'+i+'</b>' for i in names_table]
+    names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
-        if i%2 != 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
@@ -1080,21 +1137,22 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     traces = []
 
     trace = dict(
-        type = 'table',
-        header = dict(
-            values = names_table,
-            line = dict(color = '#506784'),
-            fill = dict(color = 'grey'),
-            align = 'center',
-            font = dict(color = 'white', size = 10)
+        type='table',
+        header=dict(
+            values=names_table,
+            line=dict(color='#506784'),
+            fill=dict(color='grey'),
+            align='center',
+            font=dict(color='white', size=10)
         ),
-        cells = dict(
-           values = table.values.T,
-            fill = dict(
+        cells=dict(
+            values=table.values.T,
+            line=dict(color='white'),
+            fill=dict(
                 color=[aux_color]
-                ),
-            )
+            ),
         )
+    )
 
     traces.append(trace)
 
@@ -1126,46 +1184,58 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
     dff['time_days'] = data_calculo(dff, 'Convocacao_Data', 'Contribuicao_data_final')
 
     table = dff.pivot_table(values='time_days', index=['Ano'], columns=['Indexacao_Tema'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='time_days', columns=['Indexacao_Tema'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
-    names_table = ['<b>'+i+'</b>' for i in names_table]
+    names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
-        if i%2 != 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
 
-
     traces = []
 
     trace = dict(
-        type = 'table',
-        header = dict(
-            values = names_table,
-            line = dict(color = '#506784'),
-            fill = dict(color = 'grey'),
-            align = 'center',
-            font = dict(color = 'white', size = 10)
+        type='table',
+        header=dict(
+            values=names_table,
+            line=dict(color='#506784'),
+            fill=dict(color='grey'),
+            align='center',
+            font=dict(color='white', size=10)
         ),
-        cells = dict(
-           values = table.values.T,
-            fill = dict(
+        cells=dict(
+            values=table.values.T,
+            line=dict(color='white'),
+            fill=dict(
                 color=[aux_color]
-                ),
-            )
+            ),
         )
+    )
+
     traces.append(trace)
 
     layout = dict(
@@ -1200,23 +1270,34 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     dff.time_days = dff.time_days.apply(lambda x: float(x))
 
     table = dff.pivot_table(values='time_days', index=['Ano'], columns=['Objetivo_participacao'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='time_days', columns=['Objetivo_participacao'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
-    names_table = ['<b>'+i+'</b>' for i in names_table]
+    names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
-        if i%2 != 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
@@ -1224,21 +1305,22 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     traces = []
 
     trace = dict(
-        type = 'table',
-        header = dict(
-            values = names_table,
-            line = dict(color = '#506784'),
-            fill = dict(color = 'grey'),
-            align = 'center',
-            font = dict(color = 'white', size = 10)
+        type='table',
+        header=dict(
+            values=names_table,
+            line=dict(color='#506784'),
+            fill=dict(color='grey'),
+            align='center',
+            font=dict(color='white', size=10)
         ),
-        cells = dict(
-           values = table.values.T,
-            fill = dict(
+        cells=dict(
+            values=table.values.T,
+            line=dict(color='white'),
+            fill=dict(
                 color=[aux_color]
-                ),
-            )
+            ),
         )
+    )
 
     traces.append(trace)
 
@@ -1275,46 +1357,58 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
     dff.time_days = dff.time_days.apply(lambda x: float(x))
 
     table = dff.pivot_table(values='time_days', index=['Ano'], columns=['Indexacao_Tema'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='time_days', columns=['Indexacao_Tema'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
-    names_table = ['<b>'+i+'</b>' for i in names_table]
+    names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
-        if i%2 != 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
 
-
     traces = []
 
     trace = dict(
-        type = 'table',
-        header = dict(
-            values = names_table,
-            line = dict(color = '#506784'),
-            fill = dict(color = 'grey'),
-            align = 'center',
-            font = dict(color = 'white', size = 10)
+        type='table',
+        header=dict(
+            values=names_table,
+            line=dict(color='#506784'),
+            fill=dict(color='grey'),
+            align='center',
+            font=dict(color='white', size=10)
         ),
-        cells = dict(
-           values = table.values.T,
-            fill = dict(
+        cells=dict(
+            values=table.values.T,
+            line=dict(color='white'),
+            fill=dict(
                 color=[aux_color]
-                ),
-            )
+            ),
         )
+    )
+
     traces.append(trace)
 
     layout = dict(
@@ -1350,23 +1444,34 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     dff.time_days = dff.time_days.apply(lambda x: float(x))
 
     table = dff.pivot_table(values='time_days', index=['Ano'], columns=['Objetivo_participacao'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='time_days', columns=['Objetivo_participacao'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
-    names_table = ['<b>'+i+'</b>' for i in names_table]
+    names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
-        if i%2 != 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
@@ -1374,21 +1479,22 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     traces = []
 
     trace = dict(
-        type = 'table',
-        header = dict(
-            values = names_table,
-            line = dict(color = '#506784'),
-            fill = dict(color = 'grey'),
-            align = 'center',
-            font = dict(color = 'white', size = 10)
+        type='table',
+        header=dict(
+            values=names_table,
+            line=dict(color='#506784'),
+            fill=dict(color='grey'),
+            align='center',
+            font=dict(color='white', size=10)
         ),
-        cells = dict(
-           values = table.values.T,
-            fill = dict(
+        cells=dict(
+            values=table.values.T,
+            line=dict(color='white'),
+            fill=dict(
                 color=[aux_color]
-                ),
-            )
+            ),
         )
+    )
 
     traces.append(trace)
 
@@ -1402,7 +1508,6 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do tempo da disponibilização do relatório após a data de convocação por objetivo, em dias.",
         zoom=7,
     )
 
@@ -1425,46 +1530,58 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
     dff.time_days = dff.time_days.apply(lambda x: float(x))
 
     table = dff.pivot_table(values='time_days', index=['Ano'], columns=['Indexacao_Tema'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='time_days', columns=['Indexacao_Tema'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
-    names_table = ['<b>'+i+'</b>' for i in names_table]
+    names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
-        if i%2 != 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
 
-
     traces = []
 
     trace = dict(
-        type = 'table',
-        header = dict(
-            values = names_table,
-            line = dict(color = '#506784'),
-            fill = dict(color = 'grey'),
-            align = 'center',
-            font = dict(color = 'white', size = 10)
+        type='table',
+        header=dict(
+            values=names_table,
+            line=dict(color='#506784'),
+            fill=dict(color='grey'),
+            align='center',
+            font=dict(color='white', size=10)
         ),
-        cells = dict(
-           values = table.values.T,
-            fill = dict(
+        cells=dict(
+            values=table.values.T,
+            line=dict(color='white'),
+            fill=dict(
                 color=[aux_color]
-                ),
-            )
+            ),
         )
+    )
+
     traces.append(trace)
 
     layout = dict(
@@ -1477,7 +1594,6 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do tempo da disponibilização do relatório após a data de convocação por tema, em dias.",
         zoom=7,
     )
 
@@ -1511,23 +1627,34 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     dff.time_days = dff.time_days.apply(lambda x: float(x))
 
     table = dff.pivot_table(values='time_days', index=['Ano'], columns=['Objetivo_participacao'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='time_days', columns=['Objetivo_participacao'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
-    names_table = ['<b>'+i+'</b>' for i in names_table]
+    names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
-        if i%2 != 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
@@ -1535,21 +1662,22 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     traces = []
 
     trace = dict(
-        type = 'table',
-        header = dict(
-            values = names_table,
-            line = dict(color = '#506784'),
-            fill = dict(color = 'grey'),
-            align = 'center',
-            font = dict(color = 'white', size = 10)
+        type='table',
+        header=dict(
+            values=names_table,
+            line=dict(color='#506784'),
+            fill=dict(color='grey'),
+            align='center',
+            font=dict(color='white', size=10)
         ),
-        cells = dict(
-           values = table.values.T,
-            fill = dict(
+        cells=dict(
+            values=table.values.T,
+            line=dict(color='white'),
+            fill=dict(
                 color=[aux_color]
-                ),
-            )
+            ),
         )
+    )
 
     traces.append(trace)
 
@@ -1563,7 +1691,6 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do tempo da disponibilização do produto final após a data de convocação por objetivo, em dias.",
         zoom=7,
     )
 
@@ -1596,46 +1723,58 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
     dff.time_days = dff.time_days.apply(lambda x: float(x))
 
     table = dff.pivot_table(values='time_days', index=['Ano'], columns=['Indexacao_Tema'], aggfunc=agg_table_mean, fill_value = '', dropna = False)
+    table_total = dff.pivot_table(values='time_days', columns=['Indexacao_Tema'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
     names_table.extend(list(table.columns))
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
-    names_table = ['<b>'+i+'</b>' for i in names_table]
+    names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
-        if i%2 != 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
 
-
     traces = []
 
     trace = dict(
-        type = 'table',
-        header = dict(
-            values = names_table,
-            line = dict(color = '#506784'),
-            fill = dict(color = 'grey'),
-            align = 'center',
-            font = dict(color = 'white', size = 10)
+        type='table',
+        header=dict(
+            values=names_table,
+            line=dict(color='#506784'),
+            fill=dict(color='grey'),
+            align='center',
+            font=dict(color='white', size=10)
         ),
-        cells = dict(
-           values = table.values.T,
-            fill = dict(
+        cells=dict(
+            values=table.values.T,
+            line=dict(color='white'),
+            fill=dict(
                 color=[aux_color]
-                ),
-            )
+            ),
         )
+    )
+
     traces.append(trace)
 
     layout = dict(
@@ -1648,7 +1787,6 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
         ),
         hovermode="closest",
         legend=dict(font=dict(size=10), orientation='h'),
-        title="Média do tempo da disponibilização do produto final após a data de convocação por tema, em dias.",
         zoom=7,
     )
 
@@ -1677,32 +1815,44 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
 
     q25 = dff.Quantos_participaram.quantile(0.25)
 
-    dff['group'] = '0 |- {}'.format(q25)
-    dff.group[dff.Quantos_participaram >= q25] = '{} |- {}'.format(q25,q50)
-    dff.group[dff.Quantos_participaram >= q50] = '{} |- {}'.format(q50, q75)
-    dff.group[dff.Quantos_participaram >= q75] = '{} |- {}'.format(q75, q100)
+    dff['group'] = '0 |- {}'.format(int(q25))
+    dff.group[dff.Quantos_participaram >= q25] = '{} |- {}'.format(int(q25),int(q50))
+    dff.group[dff.Quantos_participaram >= q50] = '{} |- {}'.format(int(q50), int(q75))
+    dff.group[dff.Quantos_participaram >= q75] = '{} |-| {}'.format(int(q75), int(q100))
 
     dff['time_days'] = data_calculo(dff, 'Convocacao_Data', 'Contribuicao_data_final')
 
     table = dff.pivot_table(values='time_days', index='Ano', columns='group', aggfunc=agg_table_mean,
                             fill_value='', dropna=False)
+    table_total = dff.pivot_table(values='time_days', columns=['group'],
+                                  aggfunc=agg_table_mean, fill_value='', dropna=False)
+
+    table_total['Ano'] = 'Total'
 
     names_table = ['Ano']
-    names_table.extend(['0 |- {}'.format(q25), '{} |- {}'.format(q25,q50),
-                        '{} |- {}'.format(q50, q75), '{} |- {}'.format(q75, q100)])
+    names_table.extend(['0 |- {}'.format(int(q25)), '{} |- {}'.format(int(q25),int(q50)),
+                        '{} |- {}'.format(int(q50), int(q75)), '{} |-| {}'.format(int(q75), int(q100))])
 
     table['Ano'] = table.index
 
-    table = table[names_table]
+    name_aux = names_table
 
     names_table = ['<b>' + i + '</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table_total.columns)):
+        table_total.iloc[0, i] = '<b>' + str(table_total.iloc[0, i]) + '</b>'
+
+    table = table.append(table_total)
+
+    table = table[name_aux]
+
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in table.Ano:
+    for i in range(0, len(table.Ano)):
         if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
@@ -1721,11 +1871,13 @@ def make_subject_table_figure(agency_value, int_part_value, year_options_value):
         ),
         cells=dict(
             values=table.values.T,
+            line=dict(color='white'),
             fill=dict(
                 color=[aux_color]
             ),
         )
     )
+
     traces.append(trace)
 
     layout = dict(
