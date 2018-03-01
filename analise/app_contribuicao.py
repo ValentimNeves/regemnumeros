@@ -134,14 +134,14 @@ html.Div([
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P('Percentual do número de impactos das manifestações por ano e objetivo',
+        html.P('Percentual do número de manifestações por ano e objetivo',
                style={'text-align': 'center'}),
 
         dcc.Graph(id='contribuicoes_ano_table')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P('Percentual do número de impactos das manifestações por ano e tema',
+        html.P('Percentual do número de manifestações por ano e tema',
                style={'text-align': 'center'}),
 
         dcc.Graph(id='contribuicoes_ano_table_subject')
@@ -206,6 +206,7 @@ html.Div([
     html.Div([
         html.P('Percentual e tipos de aceites dos principais participantes.',
                style={'text-align': 'center'}),
+
         dcc.Graph(id='top_participants_deepdive')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
@@ -471,7 +472,8 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     dff = dff[dff.Numero_Manifestacoes.isnull() == False]
     dff = dff[dff.Ano.isnull() == False]
 
-    aux = [i for i in dff.columns if "Contribuicoes_" in i]
+    aux = [i for i in dff.columns if "impacto" in i]
+    aux.append('Numero_Manifestacoes')
 
     dff[aux] = dff[aux].fillna('0')
     dff[aux] = dff[aux].apply(pd.to_numeric, errors='coerce')
@@ -479,7 +481,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     aux.append('Ano')
 
     aux_ano = list(dff.Ano.drop_duplicates().sort_values())
-    aux_ano_geral = ['Ano' + str(i) for i in aux_ano]
+    aux_ano_geral = ['Ano ' + str(i) for i in aux_ano]
     aux_ano_geral.append('Total')
 
 
@@ -520,7 +522,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         textposition='auto',
         name = 'Não impactou mudanças',
         marker = dict(
-            color = colors_palette[2]
+            color = colors_palette[1]
         )
     )
 
@@ -541,7 +543,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         textposition='auto',
         name='Não disponível',
         marker = dict(
-            color = colors_palette[3]
+            color = colors_palette[2]
         )
     )
 
@@ -563,7 +565,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         textposition='auto',
         name = 'Recusado por não se aplicar',
         marker = dict(
-            color = colors_palette[4]
+            color = colors_palette[3]
         )
     )
 
@@ -584,13 +586,12 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         textposition='auto',
         name = 'Não está claro',
         marker = dict(
-            color = colors_palette[5]
+            color = colors_palette[4]
         )
     )
 
 
     traces.append(trace1)
-    traces.append(trace2)
     traces.append(trace3)
     traces.append(trace4)
     traces.append(trace5)
@@ -606,8 +607,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
             t=45
         ),
         hovermode="closest",
-        legend=dict(font=dict(size=10), orientation='h'),
-        title='Resposta de participantes por ano',
+        legend=dict(font=dict(size=10), orientation='h', traceorder = 'normal'),
         zoom=7,
     )
     figure = dict(data=traces, layout=layout)
@@ -627,7 +627,8 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     dff = dff[dff.Numero_Manifestacoes.isnull() == False]
     dff = dff[dff.Ano.isnull() == False]
 
-    aux = [i for i in dff.columns if "Contribuicoes_" in i]
+    aux = [i for i in dff.columns if "impacto" in i]
+    aux.append('Numero_Manifestacoes')
 
     dff[aux] = dff[aux].fillna('0')
     dff[aux] = dff[aux].apply(pd.to_numeric, errors='coerce')
@@ -670,7 +671,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
           text=aux_Nao,
         textposition='auto',
         marker = dict(
-            color = colors_palette[2]
+            color = colors_palette[1]
         )
     )
 
@@ -688,7 +689,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
       text=aux_ND,
         textposition='auto',
         marker = dict(
-            color = colors_palette[3]
+            color = colors_palette[2]
         )
     )
 
@@ -707,7 +708,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
       text=aux_NA,
         textposition='auto',
         marker = dict(
-            color = colors_palette[4]
+            color = colors_palette[3]
         )
     )
 
@@ -726,12 +727,11 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
       text=aux_NC,
         textposition='auto',
         marker = dict(
-            color = colors_palette[5]
+            color = colors_palette[4]
         )
     )
 
     traces.append(trace1)
-    traces.append(trace2)
     traces.append(trace3)
     traces.append(trace4)
     traces.append(trace5)
@@ -747,7 +747,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
             t=45
         ),
         hovermode="closest",
-        legend=dict(font=dict(size=10), orientation='h'),
+        legend=dict(font=dict(size=10), orientation='h', traceorder = 'normal'),
         zoom=7,
     )
     figure = dict(data=traces, layout=layout)
@@ -769,7 +769,8 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     dff = dff[dff.Estatal.isnull() == False]
     dff = dff[dff.Estatal !='?']
 
-    aux = [i for i in dff.columns if "Contribuicoes_" in i]
+    aux = [i for i in dff.columns if "impacto" in i]
+    aux.append('Numero_Manifestacoes')
 
     dff[aux] = dff[aux].fillna('0')
     dff[aux] = dff[aux].apply(pd.to_numeric, errors='coerce')
@@ -810,7 +811,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
       text=aux_Nao,
         textposition='auto',
         marker = dict(
-            color = colors_palette[2]
+            color = colors_palette[1]
         )
     )
 
@@ -827,7 +828,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
       text=aux_ND,
         textposition='auto',
         marker = dict(
-            color = colors_palette[3]
+            color = colors_palette[2]
         )
     )
 
@@ -844,7 +845,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
       text=aux_NA,
         textposition='auto',
         marker = dict(
-            color = colors_palette[4]
+            color = colors_palette[3]
         )
     )
 
@@ -863,13 +864,12 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
       text=aux_NC,
         textposition='auto',
         marker = dict(
-            color = colors_palette[6]
+            color = colors_palette[4]
         )
     )
 
 
     traces.append(trace1)
-    traces.append(trace2)
     traces.append(trace3)
     traces.append(trace4)
     traces.append(trace5)
@@ -885,7 +885,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
             t=45
         ),
         hovermode="closest",
-        legend=dict(font=dict(size=10), orientation='h'),
+        legend=dict(font=dict(size=10), orientation='h', traceorder = 'normal'),
         zoom=7,
     )
     figure = dict(data=traces, layout=layout)
@@ -1025,13 +1025,16 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     names_table = ['<b>'+i+'</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table.columns)):
+        table.iloc[-1, i] = '<b>' + str(table.iloc[-1, i]) + '</b>'
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in range(0,len(table.index)):
-        if i%2 == 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
@@ -1104,13 +1107,16 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     names_table = ['<b>'+i+'</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    for i in range(0, len(table.columns)):
+        table.iloc[-1, i] = '<b>' + str(table.iloc[-1, i]) + '</b>'
+
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
-    for i in range(0,len(table.index)):
-        if i%2 == 0:
+    for i in range(0, len(table.Ano)):
+        if i % 2 != 0:
             aux_color.append(rowOddColor)
         else:
             aux_color.append(rowEvenColor)
@@ -1170,7 +1176,7 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     aux = [i for i in dff.index if 'N' not in dff.loc[i,'Numero_Manifestacoes']]
     dff = dff.loc[aux,:]
-    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: np.ceil(float(x)))
 
     dff_table = dff_table.merge(dff.groupby('Quem').sum(), left_index=True, right_index=True)
 
@@ -1194,8 +1200,8 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     names_table = ['<b>'+i+'</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
@@ -1262,7 +1268,7 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     aux = [i for i in dff.index if 'N' not in dff.loc[i,'Numero_Manifestacoes']]
     dff = dff.loc[aux,:]
-    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: np.ceil(float(x)))
 
     dff_table = dff_table.merge(dff.groupby('Quem').sum(), left_index=True, right_index=True)
 
@@ -1286,8 +1292,8 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     names_table = ['<b>'+i+'</b>' for i in names_table]
 
-    rowEvenColor = 'lightgrey'
-    rowOddColor = 'white'
+    rowEvenColor = '#dddddd'
+    rowOddColor = '#eeeeee'
 
     aux_color = []
 
@@ -1349,9 +1355,15 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 
     dff_table = dff[['Quem', 'Numero_Manifestacoes']].groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
 
-    aux = [i for i in dff.index if 'N' not in dff.loc[i, 'Numero_Manifestacoes']]
+    aux = [i for i in dff.index if 'N' not in str(dff.loc[i, 'Numero_Manifestacoes'])]
     dff = dff.loc[aux, :]
-    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: np.ceil(float(x)))
+    dff = dff.fillna(0)
+    dff.Sim_impacto = dff.Sim_impacto.apply(lambda x: np.ceil(float(x)))
+    dff.Nao_impacto = dff.Nao_impacto.apply(lambda x: np.ceil(float(x)))
+    dff['N/D_impacto'] = dff['N/D_impacto'].apply(lambda x: np.ceil(float(x)))
+    dff['N/A_impacto'] = dff['N/A_impacto'].apply(lambda x: np.ceil(float(x)))
+    dff['N/C_impacto'] = dff['N/C_impacto'].apply(lambda x: np.ceil(float(x)))
 
     dff_table = dff_table.merge(dff.groupby('Quem').sum(), left_index=True, right_index=True)
 
@@ -1410,7 +1422,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
             t=45
         ),
         hovermode="closest",
-        legend=dict(font=dict(size=10), orientation='h'),
+        legend=dict(font=dict(size=10), orientation='h', traceorder = 'normal'),
         zoom=7,
     )
     figure = dict(data=traces, layout=layout)
@@ -1429,9 +1441,15 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 
     dff_table = dff[['Quem', 'Numero_Manifestacoes']].groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
 
-    aux = [i for i in dff.index if 'N' not in dff.loc[i, 'Numero_Manifestacoes']]
+    aux = [i for i in dff.index if 'N' not in str(dff.loc[i, 'Numero_Manifestacoes'])]
     dff = dff.loc[aux, :]
-    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: np.ceil(float(x)))
+    dff = dff.fillna(0)
+    dff.Sim_impacto = dff.Sim_impacto.apply(lambda x: np.ceil(float(x)))
+    dff.Nao_impacto = dff.Nao_impacto.apply(lambda x: np.ceil(float(x)))
+    dff['N/D_impacto'] = dff['N/D_impacto'].apply(lambda x: np.ceil(float(x)))
+    dff['N/A_impacto'] = dff['N/A_impacto'].apply(lambda x: np.ceil(float(x)))
+    dff['N/C_impacto'] = dff['N/C_impacto'].apply(lambda x: np.ceil(float(x)))
 
     dff_table = dff_table.merge(dff.groupby('Quem').sum(), left_index=True, right_index=True)
 
@@ -1492,7 +1510,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
             t=45
         ),
         hovermode="closest",
-        legend=dict(font=dict(size=10), orientation='h'),
+        legend=dict(font=dict(size=10), orientation='h', traceorder = 'normal'),
         zoom=7,
     )
     figure = dict(data=traces, layout=layout)
