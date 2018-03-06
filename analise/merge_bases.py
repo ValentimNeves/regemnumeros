@@ -67,6 +67,3 @@ spreadsheetId = '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU'
 
 d2g.upload(agencias_mecanismos, spreadsheetId, wks_name="mecanismo_participacao")
 d2g.upload(agencias_contribuicoes, spreadsheetId, wks_name="contribuicoes")
-
-
-#https://erikrood.com/Posts/py_gsheets.html

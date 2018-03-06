@@ -436,7 +436,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
     dfff = filter_dataframe(df, agency_value, int_part_value)
 
     aux_ano = list(dfff.Ano.drop_duplicates().sort_values())
-    aux_ano = ['Ano '+str(i) for i in aux_ano]
+    aux_ano = ['Ano '+str(int(i)) for i in aux_ano]
     aux_ano.append('Geral')
 
     aux_objetivo = list(dfff.Objetivo_participacao.drop_duplicates().sort_values())
@@ -518,7 +518,7 @@ def make_subject_time_figure(agency_value, int_part_value, year_options_value):
     dfff = filter_dataframe(df, agency_value, int_part_value)
 
     aux_ano = list(dfff.Ano.drop_duplicates().sort_values())
-    aux_ano = ['Ano '+str(i) for i in aux_ano]
+    aux_ano = ['Ano '+str(int(i)) for i in aux_ano]
     aux_ano.append('Geral')
 
     aux_tema = list(dfff.Indexacao_Tema.drop_duplicates().sort_values())
