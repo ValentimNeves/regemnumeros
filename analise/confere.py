@@ -10,6 +10,8 @@ df_mecanismo = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
                         '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU' +
                         '/export?gid=0&format=csv', index_col = 0)
 
+df_mecanismo
+
 
 agencia_email = {'ANA': 'medeiros.biancab@gmail.com',
                  'ANS': 'fernanda.mmartins@fgv.br',
@@ -24,6 +26,10 @@ agencia_email = {'ANA': 'medeiros.biancab@gmail.com',
 
 df_contribuicao['Agência'] = df_contribuicao['ID_Interno'].apply(lambda x: str(x).split('_')[0])
 
+ag = 'ANTAQ'
+
+df_mecanismo = df_mecanismo[df_mecanismo['Agência'] == 'ANTAQ']
+df_contribuicao = df_contribuicao[df_contribuicao['Agência'] == 'ANTAQ']
 
 def sendemail(from_addr, to_addr_list, cc_addr_list,
               subject, message,

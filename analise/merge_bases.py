@@ -36,7 +36,7 @@ def import_base(agencia):
 agencias_contribuicoes = pd.DataFrame({})
 agencias_mecanismos = pd.DataFrame({})
 
-for i in ['ana','ancine','bacen','antaq','ans','anatel']:
+for i in ['ana','antaq']:
     contribuicoes, mecanismos = import_base(i)
 
     agencias_contribuicoes = pd.concat([agencias_contribuicoes, contribuicoes])
@@ -44,9 +44,6 @@ for i in ['ana','ancine','bacen','antaq','ans','anatel']:
 
     agencias_mecanismos = agencias_mecanismos.reset_index(drop=True)
     agencias_contribuicoes = agencias_contribuicoes.reset_index(drop=True)
-
-agencias_contribuicoes.Categoria_Participante[agencias_contribuicoes['Entidade_Representativa'] == "Sim"] = 'Entidade Representativa'
-agencias_contribuicoes = agencias_contribuicoes.drop('Entidade_Representativa', axis = 1)
 
 def remove_r(x):
     if type(x) == str:
@@ -62,6 +59,16 @@ for i in agencias_mecanismos.columns:
 
 for i in agencias_contribuicoes.columns:
     agencias_contribuicoes[i] = agencias_contribuicoes[i].apply(lambda x: remove_r(x))
+
+agencias_contribuicoes.Numero_Manifestacoes = agencias_contribuicoes.Numero_Manifestacoes.apply(lambda x: str(x).replace(',','.'))
+
+def float_number(x):
+    if 'n' not in str(x).lower():
+        x = float(x)
+
+    return x
+
+agencias_mecanismos.Quantos_participaram = agencias_mecanismos.Quantos_participaram.apply(lambda x: float_number(x))
 
 spreadsheetId = '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU'
 

@@ -4,7 +4,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 import numpy as np
+import networkx as nx
 from datetime import datetime
+
+#networkx versão 2.1.0
 
 app = dash.Dash(__name__)
 
@@ -26,7 +29,7 @@ df.Ano = df.Ano.apply(lambda x: int(x))
 
 del df_mecanismo
 
-colors_palette = ['#e69f09', '#56b4e9', '#009e73', '#f0e442', '#0072b2', '#d55e00', '#cc79a7', '#000000']
+colors_palette = ['#e69f09', '#56b4e9', '#009e73', '#f0e442', '#0072b2', '#d55e00', '#cc79a7', '#cccccc', '#515151']
 
 agency_options = [{'label': agency, 'value': agency}
                   for agency in set(df['Agência'])]
@@ -43,13 +46,17 @@ type_part_options = [{'label': 'Todos', 'value': 'Todos'},
 objective_options = []
 subject_options = []
 
+entidade_representativa_options = [{'label': 'Filtro desativado', 'value': 'Todos'},
+                                   {'label': 'Entidade representativa', 'value': 'Sim'},
+                                   {'label': 'Outros tipos de entidades', 'value': 'Não'}]
+
+
 aux_instru_part = {'PP': 'Presencial', 'PNP': 'Não presencial', 'PP e PNP': 'Presencial e não presencial'}
 
 colors = {'text_H1': '#292735',
           'text_n': '#565656'}
 
 app.layout = html.Div(children=[
-html.Div([
     html.Div(
         [
             html.H2(
@@ -59,6 +66,7 @@ html.Div([
                          },
             ),
             html.H6('Manifestações', style = {'text-align': 'center', 'color': colors['text_n']}),
+            dcc.Interval(id='base-update', interval=1000, n_intervals=10),
         ],
         className='row'
     ),
@@ -66,42 +74,51 @@ html.Div([
 
     html.Div([
         html.Div([
-            html.Div([
-
-                html.P('Escolha uma agência reguladora:'),
+                html.P('Agência:'),
 
                 dcc.Dropdown(
                     id='agency_options',
                     options=agency_options,
                     value='ANA',
-                        ),],
-                className='three columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},
                 ),
 
-            html.Div([
-                html.P('Escolha um instrumento de participação:'),
+                html.P('Instrumento de participação:'),
 
                 dcc.Dropdown(
                     id='type_part_options',
                     options=type_part_options,
                     value='Todos',
-                ),],
-                className='three columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},
                 ),
 
-            html.Div([
-                html.P('Escolha o período temporal:'),
+                html.P('Objetivo do mecanismo:'),
 
                 dcc.Dropdown(
-                    id='type_year_options',
-                    options=type_year_options,
-                    value='Por ano',
-                ),],
-            className='three columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},
+                    id='objective_options',
+                    options=objective_options,
+                    value='Todos',
+                ),
+
+        ], className='three columns offset-by-one', style={'margin-top': '20'}),
+
+        html.Div([
+                html.P('Tema do mecanismo:'),
+
+                dcc.Dropdown(
+                    id='subject_options',
+                    options=subject_options,
+                    value='Todos',
+                ),
+
+            html.P('Entidade representativa:'),
+
+            dcc.Dropdown(
+                id='entidade_representativa_options',
+                options=entidade_representativa_options,
+                value='Todos',
             ),
-        ],
-        className='ten columns offset-by-one', style={'margin-top': '20'},
-        ),
+
+
+        ], className='three columns offset-by-one', style={'margin-top': '20'}),
     ]),
 
     html.Div([
@@ -170,10 +187,10 @@ html.Div([
         html.Div([
             dcc.RangeSlider(
                 id='my-slider-2',
-                min=2010,
-                max=2017,
-                value=[2010, 2017],
-                marks={i: i for i in range(2010, 2018)}
+                min=2000,
+                max=2018,
+                value=[2000, 2018],
+                marks={i: i for i in range(2000, 2018+1)}
             ),
         ], className='ten columns offset-by-one', style={'margin-top': '0'}),
     ]),
@@ -227,9 +244,60 @@ html.Div([
         dcc.Graph(id='top_contributions_deepdive')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
-], className='ten columns offset-by-one', style = {'background-color': '#bbbbbb'}),
-], className='twelve columns', style = {'background-color': '#eeeeee'})
+    html.Div([
+        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
 
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
+
+        html.P('Número mínimo de participação em mecanismos:'),
+
+        dcc.Input(
+            id='input_number_min',
+            placeholder='Digite um número inteiro...',
+            type='number',
+            value=3,
+        ), ],
+        className='three columns offset-by-one', style={'float': 'left', 'color': colors['text_H1'], 'margin-top': '35'},
+    ),
+
+    html.Div([
+        html.P('Rede de participação dos participantes. Se um participante esteve em uma mesma audiência com outro participante, eles são conectados.',
+               style={'text-align': 'center'}),
+        dcc.Graph(id='network_contributions')
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
+        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
+
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
+        html.P(
+            'Fluxo das catgorias dos contribuintes, podemos ver onde elas mais se concentram e para qual subcategoria elas vão.',
+            style={'text-align': 'center'}),
+        dcc.Graph(id='sankey_contributions')
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
+        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
+
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
+
+    html.Div([
+
+        html.P('Futura implementação: Escolha o período temporal:'),
+
+        dcc.Dropdown(
+            id='type_year_options',
+            options=type_year_options,
+            value='Por ano',
+        ), ],
+        className='three columns offset-by-one', style={'float': 'left', 'color': colors['text_H1']},
+    ),
+
+], className='twelve columns', style = {'background-color': '#dddddd'})
 
 def filter_dataframe(df, agency, int_part):
     if int_part == 'Todos':
@@ -240,41 +308,118 @@ def filter_dataframe(df, agency, int_part):
         dff = dff[dff['Instrumento_de_Participacao'] == int_part]
         return dff
 
-def filter_dataframe_objective_subject(df, agency, int_part, objective, subject):
-    dff = filter_dataframe(df, agency, int_part)
-    if objective == "Todos" and subject == "Todos":
+def filter_dataframe_objective_subject(dff, objective, subject, entidade):
+    if objective == "Todos" and subject == "Todos" and entidade == 'Todos':
         return dff
 
-    elif objective != "Todos" and subject == "Todos":
-        return dff[dff["Objetivo_participacao"] == objective]
-
-    elif objective == "Todos" and subject != "Todos":
-        return dff[dff["Indexacao_Tema"] == subject]
-
-    else:
+    if objective != "Todos":
         dff = dff[dff["Objetivo_participacao"] == objective]
+
+    if subject != "Todos":
         dff = dff[dff["Indexacao_Tema"] == subject]
-        return dff
+
+    if entidade != 'Todos':
+        dff = dff[dff["Entidade_Representativa"] == entidade]
+    
+    return dff
+
+@app.callback(Output('objective_options', 'options'),
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def objective_dropdown(agency_value, int_part_value, subject, entidade):
+    dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, 'Todos', subject, entidade)
+
+    if 'N/D' in dff['Objetivo_participacao'].values:
+        dff = dff[dff['Objetivo_participacao'] != 'N/D']
+
+    objective_options = list(dff['Objetivo_participacao'].sort_values().unique())
+    objective_options.insert(0, 'Todos')
+
+    objective_options = [{'label': opt, 'value': opt} for opt in objective_options]
+
+    return objective_options
+
+@app.callback(Output('subject_options', 'options'),
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def subject_dropdown(agency_value, int_part_value, objective, entidade):
+    dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, 'Todos', entidade)
+
+    if 'N/D' in dff['Indexacao_Tema'].values:
+        dff = dff[dff['Indexacao_Tema'] != 'N/D']
+
+    dff = sep_delimitador(dff, ';', 'Indexacao_Tema')
+
+    subject_options = list(dff['Indexacao_Tema'].sort_values().unique())
+    subject_options.insert(0, 'Todos')
+
+    subject_options = [{'label': opt, 'value': opt} for opt in subject_options]
+
+    return subject_options
+
+def sep_delimitador(dff, sep, column):
+    dff[column] = dff[column].str.split(sep)
+
+    for i in dff[column].index:
+        if len(dff[column][i]) == 1:
+            dff.loc[i, column] = dff.loc[i, column][0].strip()
+
+        else:
+            aux_list = dff.loc[i, column]
+            row = dff.loc[i,:]
+            dff.loc[i,column] = aux_list[0]
+            aux_list.pop(0)
+
+            for j in aux_list:
+                aux_row = row
+                aux_row[column] = j.strip()
+                dff = dff.append(aux_row)
+
+    dff = dff.reset_index(drop=True)
+
+    if 'N/D' in dff[column].values:
+        dff = dff[dff[column] != 'N/D']
+
+    return dff
+
 
 @app.callback(Output('num_contribution', 'children'),
               [Input('agency_options', 'value'),
-               Input('type_part_options', 'value')])
-
-def update_num_mecanism(agency_value, int_part_value):
-
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_text_contribution(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
+
+    aux_list = [i for i in dff.index if 'n' not in str(dff.Numero_Manifestacoes[i]).lower()]
+
+    dff_aux = dff.loc[aux_list, :].copy()
+
+    dff_aux.Numero_Manifestacoes = dff_aux.Numero_Manifestacoes.apply(lambda x: float(x))
+
+    aux_sum = dff_aux.Numero_Manifestacoes.sum()
+
+    aux_sum = int(aux_sum)
 
     if dff.shape[0] > 0:
         if int_part_value == 'Todos':
 
             return "Para a agência {}, temos registro das manifestações começando no ano {} " \
-                   "e terminando em {}, totalizando {} registros.".format(agency_value, int(np.min(dff.Ano)),
-                                                                        int(np.max(dff.Ano)), dff.shape[0])
+                   "e terminando em {}, totalizando {} manifetações que temos registro.".format(agency_value, int(np.min(dff.Ano)),
+                                                                        int(np.max(dff.Ano)), aux_sum)
 
         else:
             return "Com essa combinação de filtros, para a agência {}, temos registro das manifestações começando no ano {} " \
-                   "e terminando em {}, totalizando {} registros, que foram feitos de forma {}.".format(agency_value, int(np.min(dff.Ano)),
-                                                                                                       int(np.max(dff.Ano)),dff.shape[0],
+                   "e terminando em {}, totalizando {} manifetações que temos registro, que foram feitos de forma {}.".format(agency_value, int(np.min(dff.Ano)),
+                                                                                                       aux_sum,
                                                                                                        aux_instru_part[int_part_value].lower())
     else:
         return "Não temos registros, sobre a {}, com essas combinações de filtros.".format(agency_value)
@@ -282,49 +427,78 @@ def update_num_mecanism(agency_value, int_part_value):
 
 @app.callback(Output('my-slider-2', 'value'),
               [Input('agency_options', 'value'),
-               Input('type_part_options', 'value')])
-def update_slider(agency_value, int_part_value):
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_slider_value(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
 
     return [dff.Ano.min(),dff.Ano.max()]
 
 @app.callback(Output('my-slider-2', 'marks'),
               [Input('agency_options', 'value'),
-               Input('type_part_options', 'value')])
-def update_slider(agency_value, int_part_value):
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_slider_marks(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
     marks = {i:i for i in set(dff.Ano)}
     return marks
 
 @app.callback(Output('my-slider-2', 'min'),
               [Input('agency_options', 'value'),
-               Input('type_part_options', 'value')])
-def update_slider(agency_value, int_part_value):
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_slider_min(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
     return dff.Ano.min()
 
 @app.callback(Output('my-slider-2', 'max'),
               [Input('agency_options', 'value'),
-               Input('type_part_options', 'value')])
-def update_slider(agency_value, int_part_value):
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_slider_max(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
     return dff.Ano.max()
 
 @app.callback(Output('contribution_time', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value')])
-def make_contribution_time_figure(agency_value, int_part_value, year_options_value):
-
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_num_contribution(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
 
-    a = [str(i) + '%' for i in np.round((dff.groupby('Ano').count()['Agência'].values/dff.shape[0])*100,1)]
+    min_aux = dff.Ano.min()
+    max_aux = dff.Ano.max()
+
+    aux_list = [i for i in dff.index if 'n' not in str(dff.Numero_Manifestacoes[i]).lower()]
+
+    dff = dff.loc[aux_list, :]
+
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
+
+    y = [(dff.Numero_Manifestacoes[dff.Ano == i].sum() / dff.Numero_Manifestacoes.sum()) * 100 for i in range(min_aux, max_aux + 1)]
+
+    a = [str(i) + '%' for i in np.round(y, 1)]
 
     traces = []
     trace = dict(
         type='bar',
-        x = ['Ano '+str(i) for i in dff.groupby('Ano').count()['Agência'].index],
-        y = (dff.groupby('Ano').count()['Agência'].values/dff.shape[0])*100,
+        x = list(range(min_aux, max_aux + 1)),
+        y = y,
         text = a,
         textposition = 'auto',
         marker = dict(
@@ -335,6 +509,7 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
     traces.append(trace)
 
     layout = dict(
+        height = 600,
         autosize=True,
         margin=dict(
             l=35,
@@ -352,6 +527,7 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
         font=dict(
             color='rgb(0,0,0)'
         ),
+        xaxis = dict(type = 'category'),
         yaxis=dict(
             showgrid=False,
             showticklabels=False,
@@ -363,7 +539,10 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
 
 def colors_palettes_function(df, agency_options, columns):
 
-    df = df[df['Agência']==agency_options]
+    if agency_options == 'Todos':
+        pass
+    else:
+        df = df[df['Agência']==agency_options]
 
     aux = list(df[columns].drop_duplicates().sort_values())
 
@@ -376,22 +555,34 @@ def colors_palettes_function(df, agency_options, columns):
     return aux_colors
 
 @app.callback(Output('category_time', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),])
-def make_contribution_time_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_num_category(agency_value, int_part_value, objective, subject, entidade):
     dfff = filter_dataframe(df, agency_value, int_part_value)
+    dfff = filter_dataframe_objective_subject(dfff, objective, subject, entidade)
     dfff = dfff[dfff.Ano.isnull() == False]
 
-    aux_ano = list(dfff.Ano.drop_duplicates().sort_values())
-    aux_ano = ['Ano '+str(i) for i in aux_ano]
-    aux_ano.append('Geral')
+    min_aux = dfff.Ano.min()
+    max_aux = dfff.Ano.max()
 
-    aux_participante = list(dfff.Categoria_Participante.drop_duplicates().sort_values())
+    aux_ano = list(range(min_aux, max_aux + 1))
+    aux_ano = [str(i) for i in aux_ano]
+    aux_ano.append('Total')
 
     traces = []
 
-    aux_colors = colors_palettes_function(df,agency_value,'Categoria_Participante')
+    aux_colors = colors_palettes_function(df,'Todos','Categoria_Participante')
+
+    dfff.Categoria_Participante[dfff.Categoria_Participante == 'N/D'] = 'Contribuinte não disponível'
+    dfff.Categoria_Participante[dfff.Categoria_Participante == 'N/C'] = 'Contribuinte não identificado'
+
+    aux_colors.update({'Contribuinte não disponível': aux_colors['N/D']})
+    aux_colors.update({'Contribuinte não identificado': aux_colors['N/C']})
+
+    aux_participante = list(dfff.Categoria_Participante.drop_duplicates().sort_values())
 
     for j in aux_participante:
 
@@ -399,12 +590,12 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
 
         for i in aux_ano:
 
-            if i == 'Geral':
+            if i == 'Total':
                 aux = (dfff.Categoria_Participante[dfff.Categoria_Participante == j].count() / dfff.Categoria_Participante.count()) * 100
                 y.append(aux)
 
             else:
-                aux = (dfff.Categoria_Participante[dfff.Categoria_Participante == j][dfff.Ano == int(i.split()[1])].count() / dfff.Categoria_Participante[dfff.Ano == int(i.split()[1])].count()) * 100
+                aux = (dfff.Categoria_Participante[dfff.Categoria_Participante == j][dfff.Ano == int(i)].count() / dfff.Categoria_Participante[dfff.Ano == int(i)].count()) * 100
                 y.append(aux)
 
         a = [str(i) + '%' for i in np.round(y, 1)]
@@ -425,6 +616,7 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
 
     layout = dict(
         barmode='stack',
+        height = 600,
         autosize=True,
         margin=dict(
             l=35,
@@ -448,6 +640,7 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
             xanchor='center'
 
         ),
+        xaxis=dict(type = 'category'),
         yaxis=dict(
             showgrid=False,
             showticklabels=False,
@@ -460,11 +653,14 @@ def make_contribution_time_figure(agency_value, int_part_value, year_options_val
 
 
 @app.callback(Output('resposta_contribuicao', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value')])
-def make_contribution_time_aceite_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_num_impacto(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
     #dfff = dff[(dff.Ano >= my_slider_value[0]) & (dff.Ano <= my_slider_value[1])]
 
     dff = dff[dff.Numero_Manifestacoes !='1?']
@@ -484,7 +680,6 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     aux_ano_geral = ['Ano ' + str(i) for i in aux_ano]
     aux_ano_geral.append('Total')
 
-
     traces = []
 
     aux_sim = [str(i) + '%' for i in np.round([(dff['Sim_impacto'][dff.Ano == i].sum()/dff.Numero_Manifestacoes[dff.Ano == i].sum())*100 for i in aux_ano], 1)]
@@ -499,7 +694,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         orientation = 'h',
         text=aux_sim,
         textposition='auto',
-        name = 'Gerou mudanças',
+        name = 'Gerou impacto',
         marker = dict(
             color = colors_palette[0]
         )
@@ -520,7 +715,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         orientation = 'h',
         text=aux_Nao,
         textposition='auto',
-        name = 'Não gerou mudanças',
+        name = 'Não gerou impacto',
         marker = dict(
             color = colors_palette[1]
         )
@@ -600,6 +795,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
 
     layout = dict(
         barmode='stack',
+        height = 600,
         autosize=True,
         margin=dict(
             l=200,
@@ -614,25 +810,38 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
     figure = dict(data=traces, layout=layout)
     return figure
 
+def find_nan_nd_nc(x):
+    if 'n' in str(x).lower():
+        return True
+    else:
+        return False
+
 @app.callback(Output('resposta_contribuicao_categoria', 'figure'),
              [Input('agency_options', 'value'),
               Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),
-              Input('my-slider-2', 'value')])
-def make_contribution_time_aceite_figure(agency_value, int_part_value, year_options_value, my_slider_value):
+              Input('my-slider-2', 'value'),
+              Input('objective_options', 'value'),
+              Input('subject_options', 'value'),
+              Input('entidade_representativa_options', 'value')])
+def make_contribution_time_aceite_figure(agency_value, int_part_value, my_slider_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
     dff = dff[(dff.Ano >= my_slider_value[0]) & (dff.Ano <= my_slider_value[1])]
 
-    dff = dff[dff.Numero_Manifestacoes !='1?']
-    dff = dff[dff.Numero_Manifestacoes != 'N/C']
-    dff = dff[dff.Numero_Manifestacoes.isnull() == False]
-    dff = dff[dff.Ano.isnull() == False]
+    dff['aux_digit'] = dff.Numero_Manifestacoes.apply(lambda x: find_nan_nd_nc(x))
+
+    dff = dff[dff['aux_digit'] == False]
+
+    dff['Numero_Manifestacoes'] = dff.Numero_Manifestacoes.apply(lambda x: float(x))
 
     aux = [i for i in dff.columns if "impacto" in i]
     aux.append('Numero_Manifestacoes')
 
     dff[aux] = dff[aux].fillna('0')
     dff[aux] = dff[aux].apply(pd.to_numeric, errors='coerce')
+
+    dff.loc[dff.Categoria_Participante == 'N/D', 'Categoria_Participante'] = 'Contribuinte não disponível'
+    dff.loc[dff.Categoria_Participante == 'N/C', 'Categoria_Participante'] = 'Contribuinte não identificado'
 
     aux.append('Ano')
 
@@ -650,7 +859,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         y=aux_ano,
         x=[(dff['Sim_impacto'][dff.Categoria_Participante == i].sum()/dff.Numero_Manifestacoes[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
         orientation = 'h',
-        name = 'Gerou mudanças',
+        name = 'Gerou impacto',
         text=aux_sim,
         textposition='auto',
         marker = dict(
@@ -668,7 +877,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         y=aux_ano,
         x=[(dff['Nao_impacto'][dff.Categoria_Participante == i].sum()/dff.Numero_Manifestacoes[dff.Categoria_Participante == i].sum())*100 for i in aux_ano],
         orientation = 'h',
-        name = 'Não gerou mudanças',
+        name = 'Não gerou impacto',
           text=aux_Nao,
         textposition='auto',
         marker = dict(
@@ -740,6 +949,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
 
     layout = dict(
         barmode='stack',
+        height = 600,
         autosize=True,
         margin=dict(
             l=200,
@@ -756,11 +966,14 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
 
 
 @app.callback(Output('resposta_contribuicao_estatal', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),])
-def make_contribution_time_aceite_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_num_impact_estatal(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
     #dfff = dff[(dff.Ano >= my_slider_value[0]) & (dff.Ano <= my_slider_value[1])]
 
     dff = dff[dff.Numero_Manifestacoes !='1?']
@@ -780,6 +993,11 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
 
     estatal_ano = list(dff.Estatal.drop_duplicates().sort_values())
 
+    if 'N/D' in estatal_ano:
+        estatal_ano.remove('N/D')
+    if 'N/C' in estatal_ano:
+        estatal_ano.remove('N/C')
+
     traces = []
 
     aux_sim = [str(i) + '%' for i in np.round(
@@ -791,7 +1009,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         y=estatal_ano,
         x=[(dff['Sim_impacto'][(dff.Estatal == i)].sum()/dff.Numero_Manifestacoes[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
         orientation = 'h',
-        name = 'Gerou mudanças',
+        name = 'Gerou impacto',
       text=aux_sim,
         textposition='auto',
         marker = dict(
@@ -808,7 +1026,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
         y=estatal_ano,
         x=[(dff['Nao_impacto'][(dff.Estatal == i)].sum()/dff.Numero_Manifestacoes[(dff.Estatal == i)].sum())*100 for i in estatal_ano],
         orientation = 'h',
-        name = 'Não gerou mudanças',
+        name = 'Não gerou impacto',
       text=aux_Nao,
         textposition='auto',
         marker = dict(
@@ -878,6 +1096,7 @@ def make_contribution_time_aceite_figure(agency_value, int_part_value, year_opti
 
     layout = dict(
         barmode='stack',
+        height = 600,
         autosize=True,
         margin=dict(
             l=200,
@@ -914,15 +1133,21 @@ def data_calculo(df, var1, var2):
 
 
 @app.callback(Output('contribuicoes_tipo_audiencia', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_year_options', 'value'),])
-def make_contribution_time_figure(agency_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_num_instrumento(agency_value, objective, subject, entidade):
     dfff = filter_dataframe(df, agency_value, 'Todos')
+    dfff = filter_dataframe_objective_subject(dfff, objective, subject, entidade)
     dfff = dfff[dfff.Ano.isnull() == False]
 
-    aux_ano = list(dfff.Ano.drop_duplicates().sort_values())
-    aux_ano = ['Ano '+str(i) for i in aux_ano]
-    aux_ano.append('Geral')
+    min_aux = dfff.Ano.min()
+    max_aux = dfff.Ano.max()
+
+    aux_ano = list(range(min_aux, max_aux +1))
+    aux_ano = [str(i) for i in aux_ano]
+    aux_ano.append('Total')
 
     aux_participante = list(dfff.Instrumento_de_Participacao.drop_duplicates().sort_values())
 
@@ -936,12 +1161,12 @@ def make_contribution_time_figure(agency_value, year_options_value):
 
         for i in aux_ano:
 
-            if i == 'Geral':
+            if i == 'Total':
                 aux = (dfff.Instrumento_de_Participacao[dfff.Instrumento_de_Participacao == j].count() / dfff.Instrumento_de_Participacao.count()) * 100
                 y.append(aux)
 
             else:
-                aux = (dfff.Instrumento_de_Participacao[dfff.Instrumento_de_Participacao == j][dfff.Ano == int(i.split()[1])].count() / dfff.Instrumento_de_Participacao[dfff.Ano == int(i.split()[1])].count()) * 100
+                aux = (dfff.Instrumento_de_Participacao[dfff.Instrumento_de_Participacao == j][dfff.Ano == int(i)].count() / dfff.Instrumento_de_Participacao[dfff.Ano == int(i)].count()) * 100
                 y.append(aux)
 
         a = [str(i) + '%' for i in np.round(y, 1)]
@@ -962,6 +1187,7 @@ def make_contribution_time_figure(agency_value, year_options_value):
 
     layout = dict(
         barmode='stack',
+        height = 600,
         autosize=True,
         margin=dict(
             l=35,
@@ -985,6 +1211,7 @@ def make_contribution_time_figure(agency_value, year_options_value):
             xanchor='center'
 
         ),
+        xaxis=dict(type = 'category'),
         yaxis=dict(
             showgrid=False,
             showticklabels=False,
@@ -996,12 +1223,17 @@ def make_contribution_time_figure(agency_value, year_options_value):
     return figure
 
 @app.callback(Output('contribuicoes_ano_table', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),
-              ])
-def make_object_table_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_table_percentage_objective(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
+
+    if 'N/D' in dff['Numero_Manifestacoes'].values:
+        dff = dff[dff['Numero_Manifestacoes'] != 'N/D']
 
     aux = [i for i in dff.index if 'N' not in dff.loc[i,'Numero_Manifestacoes']]
     dff = dff.loc[aux,:]
@@ -1063,6 +1295,7 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     traces.append(trace)
 
     layout = dict(
+        height = 600,
         autosize=True,
         margin=dict(
             l=35,
@@ -1079,12 +1312,18 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     return figure
 
 @app.callback(Output('contribuicoes_ano_table_subject', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),
-              ])
-def make_object_table_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_table_percentage_subject(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
+    dff = sep_delimitador(dff, ';', 'Indexacao_Tema')
+
+    if 'N/D' in dff['Numero_Manifestacoes'].values:
+        dff = dff[dff['Numero_Manifestacoes'] != 'N/D']
 
     aux = [i for i in dff.index if 'N' not in dff.loc[i,'Numero_Manifestacoes']]
     dff = dff.loc[aux,:]
@@ -1146,6 +1385,7 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     traces.append(trace)
 
     layout = dict(
+        height = 600,
         autosize=True,
         margin=dict(
             l=35,
@@ -1162,18 +1402,26 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     return figure
 
 @app.callback(Output('top_participants', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),
-              ])
-def make_object_table_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_table_top6_participants(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
+
+    if 'N/D' in dff['Numero_Manifestacoes'].values:
+        dff = dff[dff['Numero_Manifestacoes'] != 'N/D']
+
+    if 'N/D' in dff['Quem'].values:
+        dff = dff[dff['Quem'] != 'N/D']
 
     size = len(dff.ID_Interno.drop_duplicates())
 
     dff = dff[['Quem', 'Numero_Manifestacoes']]
 
-    dff_table = dff.groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
+    dff_table = dff.groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False)
 
     dff_table['Percentual de participações em relação ao total'] = np.round((dff_table['Numero_Manifestacoes']/size)*100,2)
 
@@ -1210,7 +1458,8 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     dff_table = dff_table.sort_values(['Número de participação', 'Número total de manifestações'], ascending=False)
 
-    dff_table = dff_table[0:6]
+    if len(dff_table) > 6:
+        dff_table = dff_table[0:6]
 
     for i in range(0,len(dff_table.index)):
         if i%2 == 0:
@@ -1241,6 +1490,7 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     traces.append(trace)
 
     layout = dict(
+        height = 600,
         autosize=True,
         margin=dict(
             l=35,
@@ -1257,18 +1507,23 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
 
 @app.callback(Output('top_contributions', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),
-              ])
-def make_object_table_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_table_top6_contribution(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
 
     size = len(dff.ID_Interno.drop_duplicates())
 
     dff = dff[['Quem', 'Numero_Manifestacoes']]
 
-    dff_table = dff.groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
+    if 'N/D' in dff.Quem.values:
+        dff =dff[dff.Quem != 'N/D']
+
+    dff_table = dff.groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False)
 
     dff_table['Percentual de participações'] = np.round((dff_table['Numero_Manifestacoes']/size)*100,2)
 
@@ -1305,7 +1560,8 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
 
     dff_table = dff_table.sort_values(['Número total de manifestações', 'Número de participação'], ascending=False)
 
-    dff_table = dff_table[0:6]
+    if len(dff_table) > 6:
+        dff_table = dff_table[0:6]
 
     for i in range(0,len(dff_table.index)):
         if i%2 == 0:
@@ -1336,6 +1592,7 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     traces.append(trace)
 
     layout = dict(
+        height = 600,
         autosize=True,
         margin=dict(
             l=35,
@@ -1351,16 +1608,21 @@ def make_object_table_figure(agency_value, int_part_value, year_options_value):
     return figure
 
 @app.callback(Output('top_participants_deepdive', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),
-              ])
-def make_object_time_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_num_top6_participants_deepdive(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
 
     dff = dff[['Quem', 'Numero_Manifestacoes', 'Sim_impacto', 'Nao_impacto', 'N/D_impacto','N/A_impacto', 'N/C_impacto']]
 
-    dff_table = dff[['Quem', 'Numero_Manifestacoes']].groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
+    dff_table = dff[['Quem', 'Numero_Manifestacoes']].groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False)
+
+    if 'N/D' in dff_table.index:
+        dff_table = dff_table.drop('N/D')
 
     aux = [i for i in dff.index if 'N' not in str(dff.loc[i, 'Numero_Manifestacoes'])]
     dff = dff.loc[aux, :]
@@ -1380,15 +1642,16 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 
     dff_table = dff_table.sort_values(['Numero_Manifestacoes_x', 'Numero_Manifestacoes_y'], ascending=False)
 
-    dff_table = dff_table[0:6]
+    if len(dff_table) > 6:
+        dff_table = dff_table[0:6]
 
     aux_contribuicoes = ['Sim_impacto', 'Nao_impacto', 'N/D_impacto',
                'N/A_impacto', 'N/C_impacto']
 
     dff_table[aux_contribuicoes] = dff_table[aux_contribuicoes].apply(lambda x: (x/x.sum())*100, axis = 1)
 
-    aux_dic = {'Sim_impacto': 'Gerou mudanças',
-               'Nao_impacto': 'Não gerou mudanças', 'N/D_impacto': 'Não está disponível',
+    aux_dic = {'Sim_impacto': 'Gerou impacto',
+               'Nao_impacto': 'Não gerou impacto', 'N/D_impacto': 'Não está disponível',
                'N/A_impacto': 'Recusado por não se aplicar', 'N/C_impacto': 'Não está claro'}
 
     traces = []
@@ -1423,6 +1686,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 
     layout = dict(
         barmode='stack',
+        height = 600,
         autosize=True,
         margin=dict(
             l=200,
@@ -1437,18 +1701,267 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
     figure = dict(data=traces, layout=layout)
     return figure
 
+@app.callback(Output('network_contributions', 'figure'),
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('input_number_min', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_graph(agency_value, int_part_value, objective, subject, input_number, entidade):
+    dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
+
+    dff = dff[dff['Quem'] != 'N/D']
+    dff = dff[dff['Quem'] != 'N/C']
+    dff = dff[dff.Numero_Manifestacoes != 'N/D']
+    dff = dff[dff.Numero_Manifestacoes != 'N/C']
+
+    dff.Quem = dff.Quem.apply(lambda x: x.split('(')[0].strip())
+
+    dff['count'] = dff.Quem.apply(lambda x: dff.Quem[dff.Quem == x].count())
+    dff['count_size_bonus'] = 1 + dff['count']/dff['count'].max()
+    dff = dff[dff['count'] >= float(input_number)]
+
+    dff.Numero_Manifestacoes = dff.Numero_Manifestacoes.apply(lambda x: float(x))
+
+    dff_aux = dff.groupby('Quem').sum()
+    dff_aux = dff_aux.fillna(0)
+    dff_aux['percent_total_impacto'] = dff_aux.Sim_impacto/dff_aux.Numero_Manifestacoes*100
+
+    dic_nx = {}
+
+    for i in dff.Quem.unique():
+        aux_id = dff.ID_Interno[dff.Quem == i]
+        aux_list_name = []
+        [aux_list_name.extend(dff[dff.ID_Interno == j].Quem.unique()) for j in aux_id]
+
+        aux_list_name = list(set(aux_list_name))
+        dic_nx.update({i: aux_list_name})
+
+    G=nx.from_dict_of_lists(dic_nx)
+    pos=nx.spring_layout(G, random_state = 1)
+
+    edge_trace = dict(
+        type = 'scatter',
+        x=[],
+        y=[],
+        line=dict(width=0.5,color='#888'),
+        hoverinfo='none',
+        mode='lines')
+
+    for edge in G.edges():
+        x0, y0 = pos[edge[0]]
+        x1, y1 = pos[edge[1]]
+        edge_trace['x'] += [x0, x1, None]
+        edge_trace['y'] += [y0, y1, None]
+
+    node_trace = dict(
+        type = 'scatter',
+        x=[],
+        y=[],
+        text=[],
+        mode='markers',
+        hoverinfo='text',
+        marker=dict(
+            showscale=True,
+            # colorscale options
+            # 'Greys' | 'Greens' | 'Bluered' | 'Hot' | 'Picnic' | 'Portland' |
+            # Jet' | 'RdBu' | 'Blackbody' | 'Earth' | 'Electric' | 'YIOrRd' | 'YIGnBu'
+            colorscale='Bluered',
+            reversescale=True,
+            color=[],
+            size=10,
+            colorbar=dict(
+                thickness=15,
+                title='Percentual do quanto o contribuinte impactou',
+                xanchor='left',
+                titleside='right',
+                tickvals = list(range(0,101,10))
+            ),
+            line=dict(width=2)))
+
+    for node in G.nodes():
+        x, y = pos[node]
+        node_trace['x'].append(x)
+        node_trace['y'].append(y)
+
+    node_trace['marker']['size'] = []
+
+    for node, adjacencies in list(G.adjacency()):
+        node_trace['marker']['size'].append(20 * dff['count_size_bonus'][dff.Quem == node].max())
+        node_trace['marker']['color'].append(dff_aux.loc[node,'percent_total_impacto'])
+        node_info = str(node)+' ('+str(len(adjacencies)-1)+' conexões)'
+        node_trace['text'].append(node_info)
+
+    node_trace['marker']['color'].append(100)
+
+    node_trace2 = node_trace.copy()
+
+    node_trace2['y'] = [i+j*0.00111 for i,j in zip(node_trace['y'],node_trace['marker']['size'])]
+    node_trace2['mode'] = 'text'
+    node_trace2['text'] = ['<b>' + i.split('(')[0].strip() + '</b>' for i in node_trace['text']]
+
+    traces = [edge_trace, node_trace,node_trace2]
+
+    layout = dict(
+        height=980,
+        autosize=True,
+        showlegend=False,
+        hovermode='closest',
+        margin=dict(b=20, l=5, r=5, t=40),
+#        annotations=[dict(
+#            text="Python code: <a href='https://plot.ly/ipython-notebooks/network-graphs/'> https://plot.ly/ipython-notebooks/network-graphs/</a>",
+#            showarrow=False,
+#            xref="paper", yref="paper",
+#            x=0.005, y=-0.002)],
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
+
+    figure = dict(data=traces, layout=layout)
+    return figure
+
+@app.callback(Output('sankey_contributions', 'figure'),
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value')])
+def update_sankey(agency_value, int_part_value, objective, subject):
+    dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, 'Todos')
+
+    dff = dff[dff['Quem'] != 'N/D']
+    dff = dff[dff['Quem'] != 'N/C']
+    dff = dff.drop_duplicates('Quem')
+
+    dff.Entidade_Representativa[dff.Entidade_Representativa == 'Sim'] = 'Entidade representativa'
+    dff.Entidade_Representativa[dff.Entidade_Representativa == 'Não'] = 'Outros tipos de entidades'
+
+    aux_array = np.concatenate((dff.Entidade_Representativa.unique(), dff.Categoria_Participante.unique(),dff.Subcategoria_Participante.unique(), dff.Sub_subcategoria_Participante.unique(), dff.Sub_sub_subcategoria_Participante.unique()))
+
+    dic_data = {aux_array[i]:i for i in range(0, len(aux_array)) if str(aux_array[i]) != 'N/D' and str(aux_array[i]) != 'N/C' and str(aux_array[i]) != 'nan'}
+
+    dic_data.keys()
+    dff.Categoria_Participante
+    list(aux_array)
+
+    source = []
+    target = []
+    value = []
+
+    for ep in dff.Entidade_Representativa.unique():
+        if str(ep) == 'N/D' or str(ep) == 'N/C' or str(ep) == 'nan':
+            continue
+
+        dff_ep = dff[dff.Entidade_Representativa == ep]
+
+        for cp in dff_ep.Categoria_Participante.unique():
+            if len(dff_ep[dff_ep.Categoria_Participante == cp]) == 0:
+                continue
+
+            if str(cp) == 'N/D' or str(cp) == 'N/C' or str(cp) == 'nan':
+                continue
+
+            source.append(dic_data[ep])
+            target.append(dic_data[cp])
+
+            dff_aux = dff_ep[dff_ep.Categoria_Participante == cp]
+
+            value.append(len(dff_aux))
+
+            for scp in dff_aux.Subcategoria_Participante.unique():
+                if len(dff_aux[dff_aux.Subcategoria_Participante == scp]) == 0:
+                    continue
+
+                if str(scp) == 'N/D' or str(scp) == 'N/C' or str(scp) == 'nan':
+                    continue
+
+                source.append(dic_data[cp])
+                target.append(dic_data[scp])
+
+                dff_aux2 = dff_aux[dff_aux.Subcategoria_Participante == scp]
+
+                value.append(len(dff_aux2))
+
+                for sscp in dff_aux2.Sub_subcategoria_Participante.unique():
+                    if len(dff[dff.Sub_subcategoria_Participante == sscp]) == 0:
+                        continue
+                    if str(sscp) == 'N/D' or str(sscp) == 'N/C' or str(sscp) == 'nan':
+                        continue
+
+                    source.append(dic_data[scp])
+                    target.append(dic_data[sscp])
+
+                    dff_aux3 = dff_aux2[dff_aux2.Sub_subcategoria_Participante == sscp]
+
+                    value.append(len(dff_aux3))
+
+                    for ssscp in dff_aux3.Sub_sub_subcategoria_Participante.unique():
+                        if len(dff[dff.Sub_sub_subcategoria_Participante == ssscp]) == 0:
+                            continue
+                        if str(ssscp) == 'N/D' and str(ssscp) == 'N/C' and str(ssscp) == 'nan':
+                            continue
+
+                        source.append(dic_data[sscp])
+                        target.append(dic_data[ssscp])
+
+                        dff_aux4 = dff_aux3[dff_aux3.Sub_sub_subcategoria_Participante == ssscp]
+
+                        value.append(len(dff_aux4))
+
+    data_trace = dict(
+        type='sankey',
+        domain = dict(
+          x =  [0,1],
+          y =  [0,1]
+        ),
+        orientation = "h",
+        valueformat = ".0f",
+        valuesuffix = " Contribuintes",
+        node = dict(
+          pad = 15,
+          thickness = 15,
+          line = dict(
+            color = "black",
+            width = 0.5
+          ),
+          label =  list(aux_array),
+          #color =  data['data'][0]['node']['color']
+        ),
+        link = dict(
+          source =  source,
+          target =  target,
+          value =  value,
+    #      label =  data['data'][0]['link']['label']
+      ))
+
+    layout =  dict(
+            height = 1040,
+        font = dict(
+          size = 14
+        )
+    )
+
+    figure = dict(data=[data_trace], layout=layout)
+
+    return figure
 
 @app.callback(Output('top_contributions_deepdive', 'figure'),
-             [Input('agency_options', 'value'),
-              Input('type_part_options', 'value'),
-              Input('type_year_options', 'value'),
-              ])
-def make_object_time_figure(agency_value, int_part_value, year_options_value):
+              [Input('agency_options', 'value'),
+               Input('type_part_options', 'value'),
+               Input('objective_options', 'value'),
+               Input('subject_options', 'value'),
+               Input('entidade_representativa_options', 'value')])
+def update_num_top6_contributions_deepdive(agency_value, int_part_value, objective, subject, entidade):
     dff = filter_dataframe(df, agency_value, int_part_value)
+    dff = filter_dataframe_objective_subject(dff, objective, subject, entidade)
 
     dff = dff[['Quem', 'Numero_Manifestacoes', 'Sim_impacto', 'Nao_impacto', 'N/D_impacto','N/A_impacto', 'N/C_impacto']]
 
-    dff_table = dff[['Quem', 'Numero_Manifestacoes']].groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False).drop('N/D')
+    dff_table = dff[['Quem', 'Numero_Manifestacoes']].groupby('Quem').count().sort_values('Numero_Manifestacoes', ascending=False)
+
+    if 'N/D' in dff_table.index:
+        dff_table = dff_table.drop('N/D')
 
     aux = [i for i in dff.index if 'N' not in str(dff.loc[i, 'Numero_Manifestacoes'])]
     dff = dff.loc[aux, :]
@@ -1468,15 +1981,16 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 
     dff_table = dff_table.sort_values(['Numero_Manifestacoes_y', 'Numero_Manifestacoes_x'], ascending=False)
 
-    dff_table = dff_table[0:6]
+    if len(dff_table) > 6:
+        dff_table = dff_table[0:6]
 
     aux_contribuicoes = ['Sim_impacto', 'Nao_impacto', 'N/D_impacto',
                'N/A_impacto', 'N/C_impacto']
 
     dff_table[aux_contribuicoes] = dff_table[aux_contribuicoes].apply(lambda x: (x/x.sum())*100, axis = 1)
 
-    aux_dic = {'Sim_impacto': 'Gerou mudanças',
-               'Nao_impacto': 'Não gerou mudanças', 'N/D_impacto': 'Não está disponível',
+    aux_dic = {'Sim_impacto': 'Gerou impacto',
+               'Nao_impacto': 'Não gerou impacto', 'N/D_impacto': 'Não está disponível',
                'N/A_impacto': 'Recusado por não se aplicar', 'N/C_impacto': 'Não está claro'}
 
     traces = []
@@ -1511,6 +2025,7 @@ def make_object_time_figure(agency_value, int_part_value, year_options_value):
 
     layout = dict(
         barmode='stack',
+        height = 600,
         autosize=True,
         margin=dict(
             l=200,
