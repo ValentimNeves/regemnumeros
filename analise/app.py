@@ -1,7 +1,8 @@
 import dash
-from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output
+
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -10,14 +11,14 @@ app = dash.Dash(__name__)
 
 server = app.server
 
-df = pd.read_csv('https://docs.google.com/spreadsheets/d/' +
-                 '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU' +
-                 '/export?gid=0&format=csv', index_col = 0)
+df = pd.read_csv(
+    'https://docs.google.com/spreadsheets/d/'
+     + '1IOvUGadhTcyLYtKY9yriImylhRgHNt6mQH-JcHf-3tU'
+     + '/export?gid=0&format=csv', index_col=0)
 
 df.Produto_Final_Data = df.Produto_Final_Data.apply(lambda x: str(x).split(';')[0])
 
-agency_options = [{'label': agency, 'value': agency}
-                  for agency in set(df['Agência'])]
+agency_options = [{'label': agency, 'value': agency} for agency in set(df['Agência'])]
 
 type_year_options = [{'label': 'Por ano', 'value': 'Por ano'},
                      {'label': 'Por mandato presidencial', 'value': 'Por mandato presidencial'},
@@ -28,196 +29,171 @@ type_part_options = [{'label': 'Todos', 'value': 'Todos'},
                      {'label': 'Não presencial', 'value': 'PNP'},
                      {'label': 'Presencial e não presencial', 'value': 'PP e PNP'}]
 
-colors_palette = ['#e69f09', '#56b4e9', '#009e73', '#f0e442', '#0072b2', '#d55e00', '#cc79a7', '#cccccc', '#515151']
+colors_palette = ['#e69f09', '#56b4e9', '#009e73', '#f0e442',
+                  '#0072b2', '#d55e00', '#cc79a7', '#cccccc',
+                  '#515151']
 
 objective_options = []
 subject_options = []
 
-aux_instru_part = {'PP': 'Presencial', 'PNP': 'Não presencial', 'PP e PNP': 'Presencial e não presencial'}
+aux_instru_part = {'PP': 'Presencial', 'PNP': 'Não presencial',
+                   'PP e PNP': 'Presencial e não presencial'}
 
 colors = {'text_H1': '#292735',
           'text_n': '#565656'}
 
-app.layout = html.Div(children=[
-    html.Div(
-        [
-            html.H2(
-                'Regulação em números',
-                    style = {'text-align': 'center',
-                             'color': colors['text_H1'],
-                             },
-            ),
-            html.H6('Mecanismo de participação', style = {'text-align': 'center', 'color': colors['text_n']}),
-        ],
-        className='row'
-    ),
+app.layout = \
+html.Div([
+    html.Div([
+            html.H2('Regulação em números',
+                    style = {'text-align': 'center', 'color': colors['text_H1']}),
+            html.H6('Mecanismo de participação',
+                    style = {'text-align': 'center', 'color': colors['text_n']}),
+        ],className='row'),
+
     html.Hr(style={'margin': '20', 'margin-bottom': '5'}),
 
     html.Div([
         html.Div([
             html.Div([
-
                 html.P('Agência:'),
-
                 dcc.Dropdown(
                     id='agency_options',
                     options=agency_options,
                     value='ANA',
-                        ),],
-                className='one columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},
-                ),
+                )
+            ], className='one columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},),
 
             html.Div([
                 html.P('Instrumento de participação:'),
-
                 dcc.Dropdown(
                     id='type_part_options',
                     options=type_part_options,
                     value='Todos',
-                ),],
-                className='two columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},
-                ),
+                )
+            ], className='two columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},),
 
             html.Div([
                 html.P('Objetivo do mecanismo:'),
-
                 dcc.Dropdown(
                     id='objective_options',
                     options=objective_options,
                     value='Todos',
-                ),],
-            className='two columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},
-            ),
+                )
+            ], className='two columns offset-by-one', style ={'float': 'left', 'color': colors['text_H1']},),
 
             html.Div([
                 html.P('Tema do mecanismo:'),
-
                 dcc.Dropdown(
                     id='subject_options',
                     options=subject_options,
                     value='Todos',
-                ), ],
-                className='two columns offset-by-one', style={'float': 'left', 'color': colors['text_H1']},
-            ),
-
-        ],
-        className='row', style={'margin-top': '20'},
-        ),
+                ),
+            ], className='two columns offset-by-one', style={'float': 'left', 'color': colors['text_H1']},),
+        ], className='row', style={'margin-top': '20'},),
     ]),
 
     html.Div([
-          html.H6('',
-                   id='num_mecanism',
-                   style={'text-align': 'center', 'color': colors['text_H1'], 'margin-top': '60'},
-                   ),
+        html.H6('',
+                id='num_mecanism',
+                style={'text-align': 'center', 'color': colors['text_H1'], 'margin-top': '60'},
+                ),
     ], className = 'six columns offset-by-three'),
 
     html.Div([
-        html.P('Percentual do número de audiências por ano em relação ao total de todos os anos.', style={'text-align': 'center'}),
-
-        dcc.Graph(id='contribution_time'),
-            ], className = 'ten columns offset-by-one', style = {'margin-top': '35'},
+        html.P('Percentual do número de audiências por ano em relação ao total de todos os anos.',
+               style={'text-align': 'center'}
         ),
+        dcc.Graph(id='contribution_time'),
+    ], className = 'ten columns offset-by-one', style = {'margin-top': '35'}),
 
     html.Div([
         html.P('Número bruto de mecanismos de participação por ano.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='table_contribution_number'),
-    ], className='ten columns offset-by-one', style={'margin-top': '35'},
-    ),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Percentual de informações não disponíveis, dos mecanismos realizados, por ano.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='contribution_time_N/D'),
-    ], className='ten columns offset-by-one', style={'margin-top': '35'},
-    ),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Percentual de audiências por ano e objetivo da participação.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='object_time'),
-        ],className = 'ten columns offset-by-one', style={'margin-top': '35'}
-    ),
+    ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Percentual de audiências por ano e tema da audiência.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='subject_time'),
-        ], className = 'ten columns offset-by-one', style={'margin-top': '35'}
-    ),
+    ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Número bruto de mecanismos de participação por tema e ano.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='table_contribution_number_subject'),
-    ], className='ten columns offset-by-one', style={'margin-top': '35'},
-    ),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-
-    html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
-
+        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Média do tempo da preparação para a audiência, em dias.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_preparation')
-            ],
-                className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+    ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+
     html.Div([
         html.P('Média do tempo da preparação para a audiência por objetivo da participação, em dias.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_preparation_table_obj')
-    ],
-        className='ten columns offset-by-one', style={'margin-top': '35'}),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
+
     html.Div([
         html.P('Média do tempo da preparação para a audiência por tema da audiência, em dias.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_preparation_table_subject')
-    ],
-        className='ten columns offset-by-one', style={'margin-top': '35'}),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Média do tempo de preparação por grupo de número de contribuinte.',
                style={'text-align': 'center'}),
-
         dcc.Graph(id='mean_time_contribution')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
-
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Média do tempo da disponibilização do relatório após a última data de contribuição, em dias.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_answer')
-        ],
-            className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+    ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Média do tempo da disponibilização do relatório após a última data de contribuição por objetivo, em dias.',
-               style={'text-align': 'center'}),
-
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_answer_table_obj')
-    ],
-        className='ten columns offset-by-one', style={'margin-top': '35'}),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
         html.P('Média do tempo da disponibilização do relatório após a última data de contribuição por tema, em dias.',
-            style={'text-align': 'center'}),
+               style={'text-align': 'center'}),
 
         dcc.Graph(id='mean_time_answer_table_subject')
     ],
@@ -245,117 +221,101 @@ app.layout = html.Div(children=[
         className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P(
-            'Média do tempo da disponibilização do relatório após a convocação por tema das audiências ou consultas públicas, em dias.',
-            style={'text-align': 'center'}),
-
+        html.P('Média do tempo da disponibilização do relatório após a convocação por tema das audiências ou consultas públicas, em dias.',
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_type1_table_subject')
-    ],
-        className='ten columns offset-by-one', style={'margin-top': '35'}),
-
-    html.Div([
-        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
-
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P(
-            "Média do tempo da disponibilização do produto final após a convocação, em dias.",
-            style={'text-align': 'center'}),
+        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
+    html.Div([
+        html.P("Média do tempo da disponibilização do produto final após a convocação, em dias.",
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_type2')
-    ],
-        className = 'ten columns offset-by-one', style={'margin-top': '35'}),
+    ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P(
-            "Média do tempo da disponibilização do produto final após a convocação por objetivo das audiências ou consultas públicas, em dias.",
-            style={'text-align': 'center'}),
-
+        html.P("Média do tempo da disponibilização do produto final após a convocação por objetivo das audiências ou consultas públicas, em dias.",
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_type2_table_obj')
-    ],
-        className='ten columns offset-by-one', style={'margin-top': '35'}),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P(
-            "Média do tempo da disponibilização do produto final após a convocação por tema das audiências ou consultas públicas, em dias.",
-            style={'text-align': 'center'}),
-
+        html.P("Média do tempo da disponibilização do produto final após a convocação por tema das audiências ou consultas públicas, em dias.",
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_type2_table_subject')
-    ],
-        className='ten columns offset-by-one', style={'margin-top': '35'}),
-
-    html.Div([
-        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
-
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P(
-            'Comparação entre a média do tempo da disponibilização do relatório e a média do tempo da disponibilização do protudo final, em dias.',
-            style={'text-align': 'center'}),
+        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
+    html.Div([
+        html.P('Comparação entre a média do tempo da disponibilização do relatório e a média do tempo da disponibilização do protudo final, em dias.',
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id='mean_time_type1_versus_mean_time_type2')
-    ],
-        className='ten columns offset-by-one', style={'margin-top': '35'}),
-
-    html.Div([
-        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
-
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P(
-            "Média do número de contribuintes que participaram de audiências ou consultas.",
-            style={'text-align': 'center'}),
+        html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
+    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
-        dcc.Graph(id = 'mean_contribution')
-        ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
     html.Div([
-        html.P(
-            "Média do número de contribuintes que participaram de audiências ou consultas por objetivo",
-            style={'text-align': 'center'}),
+        html.P("Média do número de contribuintes que participaram de audiências ou consultas.",
+               style={'text-align': 'center'}
+        ),
+        dcc.Graph(id = 'mean_contribution')
+    ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
+    html.Div([
+        html.P("Média do número de contribuintes que participaram de audiências ou consultas por objetivo",
+               style={'text-align': 'center'}
+        ),
         dcc.Graph(id = 'table_obj')
     ], className = 'ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-        html.P(
-            "Média do número de contribuintes que participaram de audiências ou consultas por tema",
-            style={'text-align': 'center'}),
-
+        html.P("Média do número de contribuintes que participaram de audiências ou consultas por tema",
+               style={'text-align': 'center'}
+               ),
         dcc.Graph(id='table_subject')
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
-   #Pouco interpretavel, remover?
-#    html.Div([
-#        html.P(
-#            "Média do número de contribuintes por dia dado de preparação",
-#            style={'text-align': 'center'}),
-#
-#        dcc.Graph(id='mean_contribution_per_mean_time_preparation')
-#    ], className='ten columns offset-by-one', style={'margin-top': '35'}),
-
     html.Div([
         html.Hr(style={'margin': '0', 'margin-bottom': '0'}),
-
     ], className='ten columns offset-by-one', style={'margin-top': '35'}),
 
     html.Div([
-
         html.P('Futura implementação: Escolha o período temporal:'),
-
         dcc.Dropdown(
             id='type_year_options',
             options=type_year_options,
             value='Por ano',
-        ), ],
-        className='three columns offset-by-one', style={'float': 'left', 'color': colors['text_H1']},
-    ),
+        ),
+    ], className='three columns offset-by-one', style={'float': 'left', 'color': colors['text_H1']}),
 
 ], className='twelve columns', style = {'background-color': '#dddddd'})
 
 def filter_dataframe(df, agency, int_part):
+    """
+    Recebe o banco de dados e retorna o  banco filtrado.
+
+    Argumentos:
+    -------
+    agency (str): nome da agência
+    int_part (str): instrumento de participação
+
+    Return
+    -------
+    dff: Dataframe
+    """
     if int_part == 'Todos':
         dff = df[df['Agência'] == agency]
         return dff
@@ -365,6 +325,19 @@ def filter_dataframe(df, agency, int_part):
         return dff
 
 def filter_dataframe_objective_subject(dff, objective, subject):
+    """
+    Recebe o banco de dados e retorna o banco filtrado.
+
+    Argumentos:
+    -------
+    objective (str): objetivo do mecanismo de participção
+    subject (str): tema do mecanismo de participação
+
+    Return
+    -------
+    dff: Dataframe
+    """
+
     if objective == "Todos" and subject == "Todos":
         return dff
 
@@ -384,6 +357,20 @@ def filter_dataframe_objective_subject(dff, objective, subject):
                Input('type_part_options', 'value'),
                Input('subject_options', 'value')])
 def update_num_mecanism(agency_value, int_part_value, subject):
+    """
+    Recebe as opções selecionadas nos filtros dos gráficos e retorna uma nova lista com as opções filtradas do objetivo.
+
+    Argumentos:
+    -------
+    agency_options (str): nome da agência
+    int_part_value (str): instrumento de participação
+    subject (str): tema do mecanismo de participação
+
+    Return
+    -------
+    objective_options: List
+    """
+
     dff = filter_dataframe(df, agency_value, int_part_value)
     dff = filter_dataframe_objective_subject(dff, 'Todos', subject)
 
@@ -402,6 +389,20 @@ def update_num_mecanism(agency_value, int_part_value, subject):
                Input('type_part_options', 'value'),
                Input('objective_options', 'value'),])
 def update_num_mecanism(agency_value, int_part_value, objective):
+    """
+    Recebe as opções selecionadas nos filtros dos gráficos e retorna uma nova lista com os opções filtradas dos temas.
+
+    Argumentos:
+    -------
+    agency_options (str): nome da agência
+    int_part_value (str): instrumento de participação
+    objective (str): objetivo do mecanismo de participação
+
+    Return
+    -------
+    subjective_options: List
+    """
+
     dff = filter_dataframe(df, agency_value, int_part_value)
     dff = filter_dataframe_objective_subject(dff, objective, 'Todos')
 
@@ -423,53 +424,63 @@ def update_num_mecanism(agency_value, int_part_value, objective):
                Input('objective_options', 'value'),
                Input('subject_options', 'value'),])
 def update_num_mecanism(agency_value, int_part_value, objective, subject):
+    """
+    Cria um texto interativo com os filtros.
+
+    Argumentos:
+    -------
+    agency_options (str): nome da agência
+    int_part_value (str): instrumento de participação
+    subject (str): tema do mecanismo de participação
+    objective (str): objetivo do mecanismo de participação
+
+    Return
+    -------
+    string
+    """
+
     dff = filter_dataframe(df, agency_value, int_part_value)
     dff = filter_dataframe_objective_subject(dff, objective, subject)
 
     if dff.shape[0] > 0:
         if int_part_value == 'Todos':
 
-            return "Para a agência {}, temos registro dos mecanismos de participação começando no ano {} " \
-                   "e terminando em {}, totalizando {} registros, com {} ainda em andamento.".format(agency_value,
-                                                                                                    np.min(dff.Ano),
-                                                                                                    np.max(dff.Ano),
-                                                                                                    dff.shape[0],
-                                                                                                    dff[dff.Situacao == "Em andamento"].shape[0])
+            return "Para a agência {}, temos registro dos mecanismos de participação " \
+                   "começando no ano {} e terminando em {}, totalizando {} " \
+                   "registros, com {} ainda em andamento.".format(agency_value,
+                                                                  np.min(dff.Ano),
+                                                                  np.max(dff.Ano),
+                                                                  dff.shape[0],
+                                                                  dff[dff.Situacao == "Em andamento"].shape[0])
 
         else:
-            return "Com essa combinação de filtros, para a agência {}, temos registro dos mecanismos de participação começando no ano {} " \
-                   "e terminando em {}, totalizando {} registros, que foram feitos de forma {}, com {} ainda em andamento.".format(agency_value,
-                                                                                                                                  np.min(dff.Ano),
-                                                                                                                                  np.max(dff.Ano),
-                                                                                                                                  dff.shape[0],
-                                                                                                                                  aux_instru_part[int_part_value].lower(),
-                                                                                                                                  dff[dff.Situacao == "Em andamento"].shape[0])
+            return "Com essa combinação de filtros, para a agência {}, temos registro dos " \
+                   "mecanismos de participação começando no ano {} e terminando em {}, " \
+                   "totalizando {} registros, que foram feitos de forma {}, com {} " \
+                   "ainda em andamento.".format(agency_value,
+                                                np.min(dff.Ano),
+                                                np.max(dff.Ano),
+                                                dff.shape[0],
+                                                aux_instru_part[int_part_value].lower(),
+                                                dff[dff.Situacao == "Em andamento"].shape[0])
     else:
         return "Não temos registros, sobre a {}, com essas combinações de filtros".format(agency_value)
 
-'''
-
-@app.callback(Output('objective_options', 'options'),
-              [Input('agency_options', 'value'),
-               Input('type_part_options', 'value')])
-def update_slider(agency_value, int_part_value):
-    dff = filter_dataframe(df, agency_value, int_part_value)
-    aux = [{'label': i, 'value': i} for i in set(dff['Objetivo_participacao'])]
-    aux.insert(0, {'label': 'Todos', 'value': 'Todos'})
-    return aux
-
-@app.callback(Output('subject_options', 'options'),
-              [Input('agency_options', 'value'),
-               Input('type_part_options', 'value')])
-def update_slider(agency_value, int_part_value):
-    dff = filter_dataframe(df, agency_value, int_part_value)
-    aux = [{'label': i, 'value': i} for i in set(dff['Indexacao_Tema'])]
-    aux.insert(0, {'label': 'Todos', 'value': 'Todos'})
-    return aux
-
-'''
-
 def colors_palettes_function(df, agency_value, columns):
+    """
+    Recebe o banco de dados e uma coluna dele, mais o filtro de agência, e retorna um dicionário.
+    Com as keys sendo os valores únicos da coluna e os values a informação da cor
+
+    Argumentos:
+    -------
+    df (dataframe): base de dados
+    agenccy_value (str): nome da âgencia
+    columns (str): nome de alguma coluna do base de dados
+
+    Return
+    -------
+    aux_colors: Dictionary
+    """
 
     df = df[df['Agência'] == agency_value]
 
@@ -517,6 +528,23 @@ def colors_palettes_function(df, agency_value, columns):
                Input('objective_options', 'value'),
                Input('subject_options', 'value'),])
 def update_num_mecanism(agency_value, int_part_value, objective, subject):
+    """
+    Recebe as variáveis e retorna um gráfico utilizando os filtros. Com a seguinte informação:
+    Percentual do número de audiências por ano em relação ao total de todos os anos.
+
+    Argumentos:
+    -------
+    agency_value (str): nome da agência
+    int_part_value (str): instrumento de participação
+    subject (str): tema do mecanismo de participação
+    objective (str): objetivo do mecanismo de participação
+
+    Return
+    -------
+    figure: Bar plot
+    """
+
+
     dff = filter_dataframe(df, agency_value, int_part_value)
     dff = filter_dataframe_objective_subject(dff, objective, subject)
 
@@ -577,6 +605,21 @@ def update_num_mecanism(agency_value, int_part_value, objective, subject):
                Input('objective_options', 'value'),
                Input('subject_options', 'value'), ])
 def update_num_mecanism(agency_value, int_part_value, objective, subject):
+    """
+    Recebe as variáveis e retorna um gráfico utilizando os filtros.
+
+    Argumentos:
+    -------
+    agency_value (str): nome da agência
+    int_part_value (str): instrumento de participação
+    subject (str): tema do mecanismo de participação
+    objective (str): objetivo do mecanismo de participação
+
+    Return
+    -------
+    figure: Bar plot
+    """
+
     dfff = filter_dataframe(df, agency_value, int_part_value)
     dfff = filter_dataframe_objective_subject(dfff, objective, subject)
 
@@ -669,6 +712,20 @@ def update_num_mecanism(agency_value, int_part_value, objective, subject):
                Input('objective_options', 'value'),
                Input('subject_options', 'value'), ])
 def update_num_mecanism(agency_value, int_part_value, objective, subject):
+    """
+    Recebe as variáveis e retorna um gráfico utilizando os filtros.
+
+    Argumentos:
+    -------
+    agency_value (str): nome da agência
+    int_part_value (str): instrumento de participação
+    subject (str): tema do mecanismo de participação
+    objective (str): objetivo do mecanismo de participação
+
+    Return
+    -------
+    figure: Bar plot
+    """
     dfff = filter_dataframe(df, agency_value, int_part_value)
     dfff = filter_dataframe_objective_subject(dfff, objective, subject)
 

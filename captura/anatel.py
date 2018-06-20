@@ -1,22 +1,50 @@
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
+fp = webdriver.FirefoxProfile()
+
+fp.set_preference("browser.download.folderList", 2)
+fp.set_preference("browser.download.manager.showWhenStarting",False)
+fp.set_preference("browser.download.dir", "/home/fexu/Downloads/")
+fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/vnd.hal+xml;text/html")
+fp.set_preference("pdfjs.disabled", True)
+
 options = Options()
 options.set_headless(headless=True)
-driver = webdriver.Firefox(firefox_options=options)
+driver = webdriver.Firefox(firefox_profile=fp, firefox_options=options)
 
-url = 'https://sistemas.anatel.gov.br/SACP/Contribuicoes/ListaConsultasContribuicoes.asp?Tipo=1&Opcao=finalizadas&PaginaAtual=1&Registros=10&cboAno=1999'
+url = 'https://sistemas.anatel.gov.br/SACP/Contribuicoes/ListaConsultasContribuicoes.asp?Tipo=1&Opcao=finalizadas&PaginaAtual=38&Registros=10&cboAno=1999'
 driver.get(url)
 
 print("Headless Firefox Initialized")
 
 page_html = driver.page_source
 
-page_html.split('consulta')
+no_content = True
 
-driver.quit()
+while no_content == True:
 
-url_download = 'https://sistemas.anatel.gov.br/SACP/Relatorios/RelatorioDadosExcelBd.asp?pExpTipo=T&pCodContri=0&pCodProcesso=CP202&pCodTipoProcesso=1&pTipoRelatorio=1'
+    if 'Please enable JavaScript to view the page content' in page_html:
+        driver.get(url)
+        page_html = driver.page_source
+
+    else:
+        no_content = False
+
+numero_paginas = page_html.split('consulta(s) encontrada(s)')[1].split('Clique nos links para navegar')[0]
+numero_paginas = [i for i in numero_paginas.split() if i.isnumeric()]
+numero_paginas = range(int(numero_paginas[0]), int(numero_paginas[1])+1)
+
+page_html_aux = page_html.lower()
+
+numero_consultas = page_html_aux.split('consulta(s) encontrada(s)')[1].split('Clique nos links para navegar')[0]
+
+url_download_sem_comentario = 'https://sistemas.anatel.gov.br/SACP/Relatorios/carregar.asp?pExpTipo=T&pCodContri=0&pCodProcesso=CP202&pCodTipoProcesso=1&pTipoRelatorio=1'
+url_download_com_comentario = 'https://sistemas.anatel.gov.br/SACP/Relatorios/carregar.asp?pExpTipo=T&pCodContri=0&pCodProcesso=CP0&pCodTipoProcesso=1&pTipoRelatorio=2'
+
+driver.get(url_download_sem_comentario)
+driver.get(url_download_com_comentario)
+
 
 from bs4 import BeautifulSoup as bfs
 
@@ -40,11 +68,15 @@ resp.text
 
 print(resp.status_code)
 
+os.c
 
-test_pdf = extract_text_from_pdf('captura/sample/Rel_Relatório_de_Contribuições_Recebidas_com_Comentários_da_Anatel_cp202_2018514154330.pdf')
-test_pdf = extract_text_from_pdf('captura/sample/Rel_Relatório_de_Contribuições_Recebidas_cp201_2018514154345.pdf')
+import sys
+sys.path.append('captura')
 
+import pdftotext
 
+test_pdf = pdftotext.extract_text_from_pdf('captura/sample/Rel_Relatório_de_Contribuições_Recebidas_com_Comentários_da_Anatel_cp202_2018514154330.pdf')
+test_pdf = pdftotext.extract_text_from_pdf('captura/sample/Rel_Relatório_de_Contribuições_Recebidas_cp201_2018514154345.pdf')
 
 '''Campos para extrair:
     ID da Contribuição: Número
